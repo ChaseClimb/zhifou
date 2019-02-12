@@ -1,0 +1,84 @@
+@CHARSET "UTF-8";
+
+/** 推荐小组 **/
+.panel-default {
+	border-radius: 0px;
+	box-shadow: none;
+	border: none;
+}
+
+.sub-item {
+	border-bottom: 1px dashed #AAAAAA;
+	height: 72px;
+	margin: 0 2px 15px 0;
+	overflow: hidden;
+}
+
+.sub-item .pic {
+	float: left;
+	width: 48px;
+}
+
+.sub-item .info {
+	color: #666666;
+	vertical-align: top;
+	word-wrap: break-word;
+	margin-left: 60px;
+}
+
+.sub-item .pic img {
+	height: 48px;
+	margin-bottom: -3px;
+	width: 48px;
+}
+
+.sub-item .info .content {
+	font-size: 12px;
+}
+
+.sub-item p {
+	margin: 0;
+}
+
+/** 首页友情链接 **/
+.b {
+	border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.b-a {
+	border: 1px solid #eaeef1;
+}
+
+.b-t {
+	border-top: 1px solid #eaeef1;
+}
+
+.b-r {
+	border-right: 1px solid #eaeef1;
+}
+
+.b-b {
+	border-bottom: 1px solid #eaeef1;
+}
+
+.b-l {
+	border-left: 1px solid #eaeef1;
+}
+
+.font-15 {
+	font-size: 15px;
+}
+
+.font-bold {
+	font-weight: 700;
+}
+
+.text-dark {
+	color: #888;
+}
+
+.button>a{
+    color: #8590a6;
+}
+
+

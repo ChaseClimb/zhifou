@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>个人页</title>
+
+    <!-- Bootstrap -->
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/user.css">
+
+</head>
+<body>
+#parse("page.html")
+#parse("header.html")
+<div class="wrap">
+    <div class="container">
+        <div class="row mt-10">
+            <div class="col-xs-12 col-md-12">
+                <div class="user-card">
+                    <div class="ProfileHeader-userCover">
+                        <div class="user-cover UserCover--colorBlock"
+                             style="background-image:url(/img/coverImage.jpg)"></div>
+                    </div>
+                    <div class="profile-header-wrapper">
+                        <div class="profile-header-main">
+                            <div class="user-avatar profile-header-avatar" style="top: -25px;">
+                                #if(!${userInfo.user.headUrl})
+                                <img class="Avatar Avatar--large UserAvatar-inner" width="160" height="160"
+                                     src="/img/avatar_big.jpg">
+                                #else
+                                <img class="Avatar Avatar--large UserAvatar-inner" width="160" height="160"
+                                     src="${userInfo.user.headUrl}">
+                                #end
+                            </div>
+                            <div class="profile-header-content">
+                                <div class="profile-header-content-head">
+                                    <h1 class="profile-header-title">
+                                        <span class="profile-header-name">$!{userInfo.user.name}</span>
+                                        <span class="profile-header-headline">$!{userInfo.user.signature}</span>
+                                    </h1>
+                                </div>
+                                <div class="profile-header-content-body">
+                                    <div class="profile-header-info">
+                                        <div class="profile-header-info-item">
+                                            <i class="fa fa-mortar-board" aria-hidden="true"></i> 音乐制作
+                                        </div>
+                                        <div class="profile-header-info-item">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="profile-header-content-footer">
+                                    <div class="profile-header-buttons">
+                                        <button type="button" data-user-id="291563087939776512"
+                                                class="Button button-blue userFollow-button"><i class="fa fa-plus"></i>
+                                            关注他
+                                        </button>
+                                        <button type="button" class="Button"><i class="fa fa-comments"
+                                                                                aria-hidden="true"></i>发私信
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 main">
+                <div class="index-list">
+                    <div class="profile-main">
+                        <ul>
+                            <li class="activ"><a href="https://www.28844.com/people/2QVJVj/">动态</a></li>
+                            <li><a href="#">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
+                            </li>
+                            <li><a href="#">提问<span
+                                    class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
+                        </ul>
+                    </div>
+
+                    #foreach($vo in $qVos)
+                    <div class="index-list-item">
+                        <h2 class="title"><a href="/question/$!{vo.question.id}">$!{vo.question.title}</a></h2>
+                        <div class="user">
+                            <div class="author-avatar">
+                                <a href="/user/$!{userInfo.user.id}" target="_blank">
+                                    #if(!${userInfo.user.headUrl})
+                                    <img class="avatar-38 mr-10 hidden-xs" src="img/avatar.jpg">
+                                    #else
+                                    <img class="avatar-38 mr-10 hidden-xs" src="${userInfo.user.headUrl}">
+                                    #end
+                                </a>
+                            </div>
+                            <div class="author-content">
+                                <div class="author-name">
+                                    <a href="/user/$!{userInfo.user.id}" target="_blank">$!{userInfo.user.name}</a>
+                                </div>
+                                <div class="author-nick">
+                                    $!{userInfo.user.signature}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="summary">
+                            <div class="excerpt">
+                                $!{vo.question.content}
+                            </div>
+                        </div>
+                        <div class="item-actions">
+                            <span>
+                                <button aria-label="赞同" type="button" class="vote-button VoteButton--up">
+                                     <i class="fa fa-caret-up"></i> 赞同 0
+                                </button>
+                                <button aria-label="反对" type="button" class="vote-button VoteButton--down">
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                            </span>
+                            <button type="button" class="Button Button--plain"><span class="fa fa-comment">​</span> 条评论
+                            </button>
+                            <button type="button" class="Button Button--plain star"><i class="fa fa-star">​</i> 收藏
+                            </button>
+                            <span class="shrink-content">收起 <i class="fa fa-angle-up"></i></span>
+                        </div>
+                    </div>
+                    #end
+
+                    <div class="text-center">
+                        #pagination("/user/$!{userInfo.user.id}", $!{pageVo})
+                    </div>
+
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+#parse("footer.html")
+
+</body>
+</html>
