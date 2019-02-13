@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>登录</title>
 
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
     <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/login.css">
 </head>
 <script>
     function changeCode() {
-        $("#imgVerifyCode").attr("src", "http://localhost:8081/genimage?a="+ new Date().getTime());
+        $("#imgVerifyCode").attr("src", "/genimage?a="+ new Date().getTime());
     }
 </script>
 <body>

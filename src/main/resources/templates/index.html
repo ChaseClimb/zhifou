@@ -7,10 +7,10 @@
     <title>知否</title>
     <!--<link rel="shortcut icon" href="https://www.28844.com/assets/favicon.ico" type="image/x-icon">-->
 
-    <script type="text/javascript" src="js/jquery.min.js"></script>
-    <script type="text/javascript" src="plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
     <!-- Bootstrap -->
-    <link href="plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css" >
+    <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
     <link href="plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/global.css">
@@ -50,7 +50,7 @@
                             <div class="author-avatar">
                                 <a href="/user/$!{vo.user.id}">
                                     #if(!${vo.user.headUrl})
-                                    <img class="avatar-38 mr-10 hidden-xs" src="img/avatar.jpg">
+                                    <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
                                     #else
                                     <img class="avatar-38 mr-10 hidden-xs" src="${vo.user.headUrl}">
                                     #end
