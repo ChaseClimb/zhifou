@@ -7,21 +7,16 @@
     <title>知否</title>
     <!--<link rel="shortcut icon" href="https://www.28844.com/assets/favicon.ico" type="image/x-icon">-->
 
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css" >
-    <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
     <link href="plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/global.css">
+
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/addQuestion.js"></script>
 </head>
-<script>
-    $(function () {
-        $("#addQuestion").click(function () {
-            alert("hh");
-        });
-    });
-</script>
 
 <body>
 
@@ -105,39 +100,7 @@
                         我要提问</a></button>
                     <button class="btn btn-primary btn-block">分享经验</button>
 
-                    <!-- 模态框（Modal） -->
-                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog"
-                         aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
-                        <div class="modal-dialog">
-                            <div class="modal-content" style="padding: 0 24px 32px;width: 536px; ">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                                        ×
-                                    </button>
-                                    <h4 class="modal-title" id="myModalLabel">
-                                        提问
-                                    </h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row mb-10">
-                                        <input placeholder="写下你的问题，准确地描述问题更容易得到解答 "
-                                               style="width: 100%;height:40px;border-radius: 3px;border: 1px solid #ccc;"/>
-                                    </div>
-                                    <div class="row mb-10">
-                                            <textarea placeholder="输入问题背景、条件等详细信息（选填） "
-                                                      style="width: 100%;resize:none;min-height: 100px;border-radius: 3px;border: 1px solid #ccc;"></textarea>
-                                    </div>
-                                </div>
-                                <div class="footer" style="padding: 5px;text-align: right;">
-                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
-                                    </button>
-                                    <button type="button" class="btn btn-primary" id="addQuestion">
-                                        发布问题
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+
                 </div>
                 <div class="widget-box">
                     <h4 class="widget-box-title ">最新公告</h4>
