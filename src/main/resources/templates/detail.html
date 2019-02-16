@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sdsgf</title>
+
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" media="screen" href="/css/global.css">
+    <link rel="stylesheet" media="screen" href="/css/question.css">
+
+    <!--引入ckeditor-->
+    <script type="text/javascript" src="/plugins/ckeditor/ckeditor.js"></script>
+</head>
+
+<body>
+
+
+
+#parse("header.html")
+#parse("page.html")
+<script>
+    $(function () {
+        $(".answer-btn").click(function () {
+            var editor = CKEDITOR.instances.edi;
+            editor.focus();
+            /*var htmlData=editor.getData();
+            var appendData = "ggg";
+            editor.setData(htmlData+appendData);*/
+        });
+
+        $(".button-plain.reply").click(function () {
+            var editor = CKEDITOR.instances.edi;
+            var htmlData=editor.getData();
+            var userName = $(this).parent().parent().find(".author-name>a").text();
+            var src = $(this).parent().parent().find(".author-name>a").attr("href");
+            editor.setData(htmlData+"@<a href="+src+">"+userName+"</a>:");
+            // 获取焦点
+            editor.focus();
+            // 将光标移至最末
+            var range = editor.createRange();
+            range.moveToElementEditEnd(editor.editable());
+
+            range.select();
+            range.scrollIntoView();
+            var target_top = $("#cke_1_contents").offset().top;
+            $("html,body").animate({scrollTop: target_top}, 1000);
+
+        });
+    })
+
+</script>
+<div class="question-header">
+    <div class="container">
+        <div class="col-xs-12 col-md-9">
+            <div class="question-header-mian">
+                <h1>$!{question.title}</h1>
+            </div>
+            <div class="question-header-footer">
+                <div class="show-content">
+                    <span class="content">$!{question.content}</span>
+                </div>
+                <div class="question-button">
+                    <button type="button" class="Button button-blue follow-button">关注问题</button>
+                </div>
+
+            </div>
+        </div>
+        <div class="col-xs-12 col-md-3 hidden-xs">
+            <div class="col-md-12 numberboard">
+                <div class="col-md-6 numberboard-item">
+                    <div class="numberboard-name">关注者</div>
+                    <strong class="numberboard">2</strong>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="wrap">
+    <div class="container">
+        <div id="test"></div>
+        <div class="row mt-10">
+            <div class="question-content">
+                #if($!{question.commentCount}!=0)
+                <div class="list-header">
+                    <h4>$!{question.commentCount} 个回答</h4>
+                </div>
+                #foreach($comment in $comments)
+                <div class="question-list-item">
+                    <button type="button" class="Button Button--plain right-close" style="display: none;"><i
+                            class="fa fa-remove">​</i></button>
+                    <div class="user">
+                        <div class="author-avatar">
+                            <a href="/user/${comment.user.id}" target="_blank">
+                                #if(!${comment.user.headUrl})
+                                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                                #else
+                                <img class="avatar-38 mr-10 hidden-xs" src="${comment.user.headUrl}">
+                                #end
+                            </a>
+                        </div>
+                        <div class="author-content">
+                            <div class="author-name">
+                                <a href="/user/${comment.user.id}" target="_blank">$!{comment.user.name}</a>
+                            </div>
+                            <div class="author-nick">
+                                $!{comment.user.signature}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="answer-info">0 人赞同了该回答</div>
+                    <div class="summary">
+                        $!{comment.comment.content}
+                    </div>
+                    <div class="answer-info">发布于 $date.format('yyyy-MM-dd HH:mm:ss', ${comment.comment.createdDate})
+                    </div>
+                    <div class="item-actions">
+                            <span>
+                                <button aria-label="赞同" type="button" class="vote-button VoteButton--up">
+                                     <i class="fa fa-caret-up"></i> 赞同 0
+                                </button>
+                                <button aria-label="反对" type="button" class="vote-button VoteButton--down">
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                            </span>
+                        <button type="button" class="button-plain reply"><span class="fa fa-comment">​</span> 回复</button>
+                        #if($!{user.id}==$!{comment.comment.userId})
+                        <button type="button" class="button-plain"><span class="fa fa-pencil-square-o">​</span> 编辑
+                        </button>
+                        #end
+                    </div>
+                </div>
+                #end
+
+                #else
+                <div class="col-xs-12 col-md-12 main">
+                    <div class="question-content">
+                        <div class="empty-state">
+                            <div class="empty-state-image"><i class="fa fa-pencil-square-o"></i></div>
+                            <div class="empty-state-text">暂时还没有回答，开始<span class="answer-btn">写第一个回答</span></div>
+                        </div>
+                    </div>
+                </div>
+                #end
+
+                <div class="text-center">
+                    #pagination("/question/${question.id}", $!{pageVo})
+                </div>
+
+            </div>
+        </div>
+        #if(!$user)
+        <div class="row">
+            <div class="requiredLogin">
+                需要 <a href="/login" class="btn btn-primary">登录</a> 后方可回复, 如果你还没有账号你可以 <a href="/reg"
+                                                                                         class="btn btn-danger">注册</a>
+                一个帐号。
+            </div>
+        </div>
+        #else
+        <div class="row mt-10" style="background-color: white">
+            <form action="/addComment" method="post">
+                <input type="hidden" name="questionId" value="$!{question.id}"/>
+                <textarea class="ckeditor" name="edi" id="edi"></textarea>
+                <div style="float: right;padding: 20px;">
+                    <button type="submit" class="btn btn-primary">发布回答</button>
+                </div>
+            </form>
+        </div>
+        #end
+    </div>
+</div>
+#parse("footer.html")
+</body>
+</html>

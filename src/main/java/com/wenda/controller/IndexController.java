@@ -90,13 +90,13 @@ public class IndexController {
     private ViewObject getQuestions(Integer userId,Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);
         List<Question> questionList = null;
-        questionList = questionService.getQuestionsById(userId);
+        questionList = questionService.getQuestionsByUserid(userId);
 
         PageInfo<Question> page = new PageInfo<>(questionList);
         if (pageNum > page.getPages()) {
             pageNum = page.getPages();
             PageHelper.startPage(pageNum, pageSize);
-            questionList = questionService.getQuestionsById(userId);
+            questionList = questionService.getQuestionsByUserid(userId);
             page = new PageInfo<>(questionList);
         }
 

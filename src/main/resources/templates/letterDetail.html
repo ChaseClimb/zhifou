@@ -14,55 +14,54 @@
 
 <body>
 #parse("header.html")
-
+#parse("page.html")
+<script type="text/javascript" src="/js/sendMessage.js"></script>
 <div class="wrap">
 
-    <div class="container">
+    <div class="container" style="background-color: white">
         <div class="row mt-10">
+
             <ul class="letter-list">
+                #foreach($message in $messages)
                 <li>
-                    <a class="letter-link" href="/msg/detail?conversationId=3_36"></a>
                     <div class="letter-info">
                         <span class="l-time">2019-02-11 14:22:27</span>
 
                     </div>
                     <div class="chat-headbox">
                         <a class="list-head">
-                            <img alt="头像" src="http://images.nowcoder.com/head/930t.png">
+                            #if(!${message.user.headUrl})
+                            <img alt="头像" src="/img/avatar.jpg">
+                            #else
+                            <img alt="头像" src="${message.user.headUrl}">
+                            #end
                         </a>
                     </div>
                     <div class="letter-detail">
                         <a title="通知" class="letter-name level-color-1">
-                            USER3
+                            $!{message.user.name} :
                         </a>
                         <p class="letter-brief">
-                            你好啊
+                            $message.message.content
                         </p>
                     </div>
                 </li>
-                <li>
-                    <a class="letter-link" href="/msg/detail?conversationId=3_36"></a>
-                    <div class="letter-info">
-                        <span class="l-time">2019-02-11 14:22:27</span>
-
-                    </div>
-                    <div class="chat-headbox">
-                        <a class="list-head">
-                            <img alt="头像" src="http://images.nowcoder.com/head/930t.png">
-                        </a>
-                    </div>
-                    <div class="letter-detail">
-                        <a title="通知" class="letter-name level-color-1">
-                            USER3
-                        </a>
-                        <p class="letter-brief">
-                            好好好
-                        </p>
-                    </div>
-                </li>
+                #end
             </ul>
-        </div>
 
+            <div class="text-center">
+                #pagination("/msg/detail", $!{pageVo})
+            </div>
+
+        </div>
+        <div class="row">
+            <div style="padding-left: 20px">发私信给 $!{targetUser.name} : </div>
+            <textarea style="width: 97%;min-height: 200px;margin-left: 16px;resize: none" id="replyMessage"></textarea>
+        </div>
+        <input value="$!{targetUser.id}" type="hidden" id="targetUserId"/>
+        <div class="row">
+            <button class="btn btn-primary" style="float: right;margin:20px " onclick="replyMessage()">发送</button>
+        </div>
     </div>
 </div>
 

@@ -15,7 +15,7 @@ public interface QuestionDao {
     List<Question> selectAllQuestions();
 
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where status=0 and user_id = #{userId}"})
-    List<Question> getQuestionsById(Integer userId);
+    List<Question> getQuestionsByUserid(Integer userId);
 
     @Select({"select count(id) from ", TABLE_NAME, " where user_id=#{userId}"})
     Integer getUserQuestionCount(Integer userId);
@@ -23,4 +23,11 @@ public interface QuestionDao {
     @Insert({"insert into ", TABLE_NAME, "(", INSERT_FIELDS,
             ") values (#{title},#{content},#{createdDate},#{updateDate},#{userId},#{commentCount},#{status})"})
     int addQuestion(Question question);
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where status=0 and id = #{qid}"})
+    Question getQuestionsById(Integer qid);
+
+    @Update({"update ", TABLE_NAME, " set comment_count = #{commentCount} where id=#{id}"})
+    int updateCommentCount(@Param("id") int id, @Param("commentCount") int commentCount);
+
 }

@@ -7,18 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>个人页</title>
 
-    <script type="text/javascript" src="/js/jquery.min.js"></script>
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css" >
-    <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
     <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/user.css">
 
 </head>
 <body>
-#parse("page.html")
 #parse("header.html")
+#parse("page.html")
+<script type="text/javascript" src="/js/sendMessage.js"></script>
 <div class="wrap">
     <div class="container">
         <div class="row mt-10">
@@ -42,6 +40,8 @@
                             <div class="profile-header-content">
                                 <div class="profile-header-content-head">
                                     <h1 class="profile-header-title">
+                                        <!--提交toId-->
+                                        <input type="hidden" id="toId" value="$!{userInfo.user.id}"/>
                                         <span class="profile-header-name">$!{userInfo.user.name}</span>
                                         <span class="profile-header-headline">$!{userInfo.user.signature}</span>
                                     </h1>
@@ -57,13 +57,26 @@
                                 </div>
                                 <div class="profile-header-content-footer">
                                     <div class="profile-header-buttons">
+                                        #if($!{userInfo.user.id}!=$!{user.id})
+                                        #if($user)
                                         <button type="button" data-user-id="291563087939776512"
                                                 class="Button button-blue userFollow-button"><i class="fa fa-plus"></i>
                                             关注他
                                         </button>
-                                        <button type="button" class="Button"><i class="fa fa-comments"
-                                                                                aria-hidden="true"></i>发私信
+                                        <button type="button" class="Button" id="sendMessage" data-toggle="modal"
+                                                data-target="#messageBox"><i class="fa fa-comments"
+                                                                              aria-hidden="true"></i>发私信
                                         </button>
+                                        #else
+                                        <button type="button" data-user-id="291563087939776512"
+                                                class="Button button-blue userFollow-button"><i class="fa fa-plus"></i>
+                                            关注他
+                                        </button>
+                                        <a href="/login"><button type="button" class="Button"><i class="fa fa-comments"
+                                                                             aria-hidden="true"></i>发私信
+                                        </button></a>
+                                        #end
+                                        #end
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +103,7 @@
                             <div class="author-avatar">
                                 <a href="/user/$!{userInfo.user.id}" target="_blank">
                                     #if(!${userInfo.user.headUrl})
-                                    <img class="avatar-38 mr-10 hidden-xs" src="img/avatar.jpg">
+                                    <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
                                     #else
                                     <img class="avatar-38 mr-10 hidden-xs" src="${userInfo.user.headUrl}">
                                     #end
@@ -119,11 +132,10 @@
                                     <i class="fa fa-caret-down"></i>
                                 </button>
                             </span>
-                            <button type="button" class="Button Button--plain"><span class="fa fa-comment">​</span> 条评论
+                            <button type="button" class="Button Button--plain"><span class="fa fa-comment">​</span> $!{vo.question.commentCount} 条评论
                             </button>
                             <button type="button" class="Button Button--plain star"><i class="fa fa-star">​</i> 收藏
                             </button>
-                            <span class="shrink-content">收起 <i class="fa fa-angle-up"></i></span>
                         </div>
                     </div>
                     #end
@@ -133,13 +145,43 @@
                     </div>
 
 
-
-
                 </div>
             </div>
         </div>
     </div>
-</div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content" style="padding: 0 24px 32px;width: 536px; ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title text-center" id="myModalLabel">
+                        发送私信
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-20">
+                            <span style="font-size: 18px"><b>$!{userInfo.user.name}</b></span>
+
+                    </div>
+                    <div class="row mb-10">
+                    <textarea id="messageContent" placeholder="私信内容"
+                              style="width: 100%;resize:none;min-height: 200px;border-radius: 3px;border: 1px solid #ccc;"></textarea>
+                    </div>
+                </div>
+                <div class="footer" style="padding: 5px;text-align: right;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                    <button type="button" class="btn btn-primary" id="addMessage" onclick="addMessage()">
+                        发送
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 #parse("footer.html")
 

@@ -21,8 +21,8 @@ public class QuestionService {
         return questionDao.selectAllQuestions();
     }
 
-    public List<Question> getQuestionsById(Integer userId) {
-        return questionDao.getQuestionsById(userId);
+    public List<Question> getQuestionsByUserid(Integer userId) {
+        return questionDao.getQuestionsByUserid(userId);
     }
 
     public Integer getUserQuestionCount(Integer userId) {
@@ -37,5 +37,13 @@ public class QuestionService {
         question.setTitle(sensitiveService.filter(question.getTitle()));
         question.setContent(sensitiveService.filter(question.getContent()));
         return questionDao.addQuestion(question);
+    }
+
+    public Question getQuestionsById(Integer qid) {
+        return questionDao.getQuestionsById(qid);
+    }
+
+    public int updateCommentCount(int id, int count) {
+        return questionDao.updateCommentCount(id, count);
     }
 }

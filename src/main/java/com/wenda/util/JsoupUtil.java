@@ -27,16 +27,21 @@ public class JsoupUtil {
         比如红色字体 style="color:red;"
         所以需要给所有标签添加 style 属性
         :all 表明给白名单中的所有标签添加style属性*/
-        whitelist.addAttributes(":all", "style");
+        whitelist.addAttributes(":all", "href","style");
+        //保留元素的URL属性中的相对链接,为false时将会把baseUri和元素的URL属性拼接起来
+        whitelist.preserveRelativeLinks(true);
+
     }
 
     public static String clean(String content) {
-        return Jsoup.clean(content, "", whitelist, outputSettings);
+        return Jsoup.clean(content, "http://baseUri", whitelist, outputSettings);
     }
 
     public static String noneClean(String content) {
         return Jsoup.clean(content, "", nonelist, outputSettings);
     }
 
-
+    /*public static void main(String[] args) {
+        System.out.println(clean("<a href='/user/1'>zhangsan</a>"));
+    }*/
 }

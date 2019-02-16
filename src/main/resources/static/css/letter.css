@@ -1,0 +1,94 @@
+.letter-list {
+    margin: 15px;
+    background: white;
+}
+
+.letter-list li {
+    border-bottom: 1px solid #E0E0E0;
+    padding: 14px 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.letter-list li:hover {
+    background: #ECF0F1;
+    cursor: pointer;
+}
+
+.letter-info {
+    float: right;
+    text-align: right;
+    color: #999;
+    font-size: 12px;
+}
+
+.chat-headbox {
+    position: relative;
+    float: left;
+    z-index: 2;
+}
+
+.letter-detail {
+    float: left;
+    font-size: 14px;
+    line-height: 1em;
+    width: 320px;
+}
+
+.letter-detail .letter-name {
+    position: absolute;
+    left: 80px;
+    top: 20px;
+    z-index: 2;
+    color: #999;
+    display: inline-block;
+}
+
+.letter-brief {
+    position: absolute;
+    left: 80px;
+    top: 50px;
+    z-index: 2;
+    color: #666;
+    float: left;
+    font-size: 14px;
+    width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    word-wrap: normal;
+    height: 16px;
+}
+
+
+.letter-link {
+    display: block;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+}
+
+.l-operate-bar>a{
+    display: block;
+    color: #999;
+    margin-top: 10px;
+}
+
+
+.msg-num {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: #e84a4a;
+    color: #FFF;
+    border-radius: 50px;
+    line-height: 16px;
+    min-height: 16px;
+    outline: medium none;
+    padding: 0 4px;
+    text-align: center;
+    z-index: 10;
+}
