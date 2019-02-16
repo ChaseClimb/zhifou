@@ -12,6 +12,7 @@ public class ZhiFouWendaWebConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     PassportInterceptor passportInterceptor;
 
+
     @Autowired
     LoginRequiredInterceptor loginRequiredInterceptor;
 
