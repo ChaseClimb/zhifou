@@ -1,4 +1,4 @@
-function addQuestion() {
+function editComment() {
     //获取文本框的值
     var title = $("#title").val();
     var content = $("#content").val();

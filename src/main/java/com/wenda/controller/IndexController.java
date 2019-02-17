@@ -2,11 +2,9 @@ package com.wenda.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wenda.model.EntityType;
-import com.wenda.model.Question;
-import com.wenda.model.User;
-import com.wenda.model.ViewObject;
+import com.wenda.model.*;
 import com.wenda.service.CommentService;
+import com.wenda.service.LikeService;
 import com.wenda.service.QuestionService;
 import com.wenda.service.UserService;
 import com.wenda.util.JsoupUtil;
@@ -30,6 +28,12 @@ public class IndexController {
     @Autowired
     CommentService commentService;
 
+    @Autowired
+    LikeService likeService;
+
+    @Autowired
+    HostHolder hostHolder;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(Model model, @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
         Integer pageNum = 1;
@@ -44,6 +48,12 @@ public class IndexController {
         model.addAttribute("qVos", vos.get("qVos"));
         model.addAttribute("pageVo", vos.get("pageVo"));
         return "index";
+    }
+
+
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
+    public String test(Model model) {
+       return "test";
     }
 
     private ViewObject getQuestions(Integer pageNum, Integer pageSize) {
@@ -71,6 +81,13 @@ public class IndexController {
             question.setContent(content);
             vo.set("question", question);
             vo.set("user", userService.getUserById(question.getUserId()));
+
+            if (hostHolder.getUser() == null) {
+                vo.set("liked", 0);
+            } else {
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, question.getId()));
+            }
+            vo.set("likeCount",likeService.getLikeCount(EntityType.ENTITY_QUESTION,question.getId()));
             qVos.add(vo);
         }
 

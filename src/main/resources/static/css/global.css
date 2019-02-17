@@ -2444,3 +2444,9 @@ ul.tagit{padding: 1px 5px;overflow:auto;margin-left:inherit;margin-right:inherit
     color: #FFFFFF;
     background: #0084FF;
 }
+
+
+.vote-button.VoteButton.active{
+    color: #FFFFFF;
+    background: #0084FF;
+}

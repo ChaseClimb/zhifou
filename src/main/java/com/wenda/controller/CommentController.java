@@ -39,7 +39,7 @@ public class CommentController {
             if (hostHolder.getUser() != null) {
                 comment.setUserId(hostHolder.getUser().getId());
             } else {
-                return "redirect:/question/"+questionId;
+                return "redirect:/question/" + questionId;
             }
             comment.setStatus(0);
             comment.setCreatedDate(new Date());
@@ -48,13 +48,33 @@ public class CommentController {
             comment.setEntityId(questionId);
             commentService.addComment(comment);
 
-            int count = commentService.getCommentCount(comment.getEntityId(),comment.getEntityType());
-            questionService.updateCommentCount(comment.getEntityId(),count);
+            int count = commentService.getCommentCount(comment.getEntityId(), comment.getEntityType());
+            questionService.updateCommentCount(comment.getEntityId(), count);
 
         } catch (Exception e) {
-            logger.error("增加评论失败"+e.getMessage());
+            logger.error("增加评论失败" + e.getMessage());
         }
-        return "redirect:/question/"+questionId;
+        return "redirect:/question/" + questionId;
+    }
+
+
+    @RequestMapping(path = "/updateComment", method = RequestMethod.POST)
+    public String updateComment(@RequestParam("commentId") int commentId
+            , @RequestParam("questionId") int questionId, @RequestParam("editCk") String content) {
+        try {
+            Comment comment = new Comment();
+            comment.setId(commentId);
+            comment.setContent(content);
+            if (hostHolder.getUser() == null) {
+                return "redirect:/question/" + questionId;
+            }
+            comment.setUpdateDate(new Date());
+            commentService.updateComment(comment);
+
+        } catch (Exception e) {
+            logger.error("更新评论失败" + e.getMessage());
+        }
+        return "redirect:/question/" + questionId;
     }
 
 

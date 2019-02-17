@@ -62,9 +62,6 @@ public class WendaUtil {
         }
     }
 
-    //图片处理
-    public static String TOUTIAO_DOMAIN = "http://127.0.0.1:8081/";
-    public static String IMAGE_DIR = "D:/upload/";
     public static String[] IMAGE_FILE_EXTD = new String[]{"png", "bmp", "jpg", "jpeg"};
 
     public static boolean isFileAllowed(String fileName) {
@@ -75,6 +72,8 @@ public class WendaUtil {
         }
         return false;
     }
+
+
 
 
 }

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wenda.model.*;
 import com.wenda.service.CommentService;
+import com.wenda.service.LikeService;
 import com.wenda.service.QuestionService;
 import com.wenda.service.UserService;
 import com.wenda.util.WendaUtil;
@@ -33,6 +34,9 @@ public class QuestionController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    LikeService likeService;
 
     @RequestMapping(value = "/question/add", method = RequestMethod.POST)
     @ResponseBody
@@ -65,7 +69,7 @@ public class QuestionController {
     public String questionDetail(Model model,@PathVariable("qid") Integer qid,@RequestParam(value = "page", defaultValue = "1") String pageNumStr){
         Question question = questionService.getQuestionsById(qid);
         model.addAttribute("question", question);
-
+        model.addAttribute("questionLikeCount", likeService.getLikeCount(EntityType.ENTITY_QUESTION,question.getId()));
 
         Integer pageNum = 1;
         Integer pageSize = 20;
@@ -95,6 +99,14 @@ public class QuestionController {
             ViewObject vo = new ViewObject();
             vo.set("comment", comment);
             vo.set("user", userService.getUserById(comment.getUserId()));
+
+            if (hostHolder.getUser() == null) {
+                vo.set("liked", 0);
+            } else {
+                vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
+            }
+            vo.set("likeCount",likeService.getLikeCount(EntityType.ENTITY_COMMENT,comment.getId()));
+
             comments.add(vo);
         }
 

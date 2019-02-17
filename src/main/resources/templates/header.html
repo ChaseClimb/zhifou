@@ -28,12 +28,14 @@
                 <form class="navbar-form navbar-left " role="search" id="top-search-form"
                       action="https://www.28844.com/search/ " method="get">
                     <div class="input-group ">
-                        <input type="text " name="q" id="searchBox " class="form-control " value=" "
-                               placeholder="有问题，搜下先 " style="width: 326px; ">
+                        <input type="text " name="q" id="searchBox " class="form-control"
+                               placeholder="有问题，先搜搜看 " style="width: 326px; ">
                         <button class="input-group-addon btn " type="submit "><i class="fa fa-search"></i></button>
                     </div>
                 </form>
+                #if($user)
                 <button type="button" class="btn button-blue ask-button" data-toggle="modal" data-target="#myModal">提问</button>
+                #end
                 <ul class="nav navbar-nav navbar-right ">
 
                     #if(!$user)
@@ -63,7 +65,7 @@
                                 <a href="/user/${user.id}">我的主页</a>
                             </li>
                             <li>
-                                <a href="#">我的私信</a>
+                                <a href="/msg/list">我的私信</a>
                             </li>
                             <li>
                                 <a href="#">设置</a>

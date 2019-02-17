@@ -36,4 +36,10 @@ public class CommentService {
     public int getCommentCount(int entityId, int entityType) {
         return commentDao.getCommentCount(entityId, entityType);
     }
+
+    public int updateComment(Comment comment) {
+        String result = JsoupUtil.clean(comment.getContent());
+        comment.setContent(sensitiveService.filter(result));
+        return commentDao.updateComment(comment);
+    }
 }

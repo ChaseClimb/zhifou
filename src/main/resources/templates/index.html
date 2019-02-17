@@ -8,7 +8,7 @@
     <!--<link rel="shortcut icon" href="https://www.28844.com/assets/favicon.ico" type="image/x-icon">-->
 
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
     <link href="plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/global.css">
@@ -66,18 +66,40 @@
 
 
                         <div class="item-actions">
+                                    <input value="$vo.liked" type="hidden" class="liked"/>
 									<span>
+                                        #if($vo.liked > 0)
                                             <button aria-label="赞同" type="button"
-                                                    class="Button VoteButton" onclick="follow(this)"><i
-                                                    class="fa fa-caret-up"></i>赞同 </button>
+                                                    class="Button VoteButton active"
+                                                    onclick="follow(this,1,'$!{vo.question.id}')">
+                                                <i class="fa fa-caret-up"></i> 赞同 <span
+                                                    class="likeNum">$!{vo.likeCount}</span>
+                                            </button>
+                                        #else
+                                            <button aria-label="赞同" type="button"
+                                                class="Button VoteButton"
+                                                onclick="follow(this,1,'$!{vo.question.id}')">
+                                                <i class="fa fa-caret-up"></i> 赞同 <span
+                                                class="likeNum">$!{vo.likeCount}</span>
+                                            </button>
+                                        #end
+
+                                        #if($vo.liked < 0)
                                             <button aria-label="反对" type="button "
-                                                    class="Button VoteButton" onclick="unfollow(this)"><i
+                                                    class="Button VoteButton active"
+                                                    onclick="unfollow(this,1,'$!{vo.question.id}')"><i
                                                     class="fa fa-caret-down"></i></button>
-                                        </span>
-                            <button type="button" class="Button Button--plain "><a href="/question/$!{vo.question.id}"><span class="fa fa-comment">​</span>
+
+                                        #else
+                                            <button aria-label="反对" type="button "
+                                                class="Button VoteButton"
+                                                onclick="unfollow(this,1,'$!{vo.question.id}')"><i
+                                                class="fa fa-caret-down"></i></button>
+                                        #end
+                                    </span>
+                            <button type="button" class="Button Button--plain "><a
+                                    href="/question/$!{vo.question.id}"><span class="fa fa-comment">​</span>
                                 $!{vo.question.commentCount} 条评论</a>
-                            </button>
-                            <button type="button " class="Button Button--plain star "><i class="fa fa-star ">​</i> 收藏
                             </button>
                         </div>
                     </div>
@@ -121,9 +143,9 @@
         </div>
 
 
-
     </div>
 </div>
+<script type="text/javascript" src="/js/vote.js"></script>
 
 #parse("footer.html")
 

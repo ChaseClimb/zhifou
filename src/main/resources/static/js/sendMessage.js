@@ -1,4 +1,4 @@
-
+//发私信
 function addMessage() {
     //获取文本框的值
     var toId = $("#toId").val();
@@ -16,6 +16,8 @@ function addMessage() {
     },"json");
 }
 
+
+//消息详情页回复消息
 function replyMessage(){
 
     var toId = $("#targetUserId").val();
