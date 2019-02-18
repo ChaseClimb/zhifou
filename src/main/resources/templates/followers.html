@@ -25,8 +25,8 @@
                 <div class="index-list">
                     <div class="profile-main">
                         <ul>
-                            <li><a href="/user/${userInfo.user.id}/questions">动态</a></li>
-                            <li><a href="/user/${userInfo.user.id}/questions">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
+                            <li><a href="/user/${userInfo.user.id}/activities">动态</a></li>
+                            <li><a href="/user/${userInfo.user.id}/answers">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
                             </li>
                             <li><a href="/user/${userInfo.user.id}/asks">提问<span
                                     class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
@@ -43,7 +43,8 @@
                         #if(!$follower.followed)
                         <button type="button"
                                 class="Button button-blue right-close btn-primary userFollow-button"
-                                onclick="followUser('$!{follower.user.id}')" style="display: block;"><i class="fa fa-plus"></i>
+                                onclick="followUser('$!{follower.user.id}')" style="display: block;"><i
+                                class="fa fa-plus"></i>
                             关注他
                         </button>
                         #else
@@ -82,7 +83,7 @@
                     #end
 
                     <div class="text-center">
-                      ##  #pagination("/user/$!{userInfo.user.id}", $!{pageVo})
+                        ## #pagination("/user/$!{userInfo.user.id}", $!{pageVo})
                     </div>
 
 

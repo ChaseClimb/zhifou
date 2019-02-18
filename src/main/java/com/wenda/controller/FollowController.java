@@ -187,6 +187,47 @@ public class FollowController {
         return vos;
     }
 
+
+    private ViewObject getComments(Integer userId,Integer pageNum, Integer pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Comment> commentList = null;
+        commentList = commentService.getCommentByUserId(userId);
+
+        PageInfo<Comment> page = new PageInfo<>(commentList);
+        if (pageNum > page.getPages()) {
+            pageNum = page.getPages();
+            PageHelper.startPage(pageNum, pageSize);
+            commentList = commentService.getCommentByUserId(userId);
+            page = new PageInfo<>(commentList);
+        }
+
+        List<ViewObject> comments = new ArrayList<>();
+        for (Comment comment : commentList) {
+            ViewObject vo = new ViewObject();
+            //去除html标签
+            String content = JsoupUtil.noneClean(comment.getContent());
+            if (content.length() >= 104) {
+                content = content.substring(0, 104) + "...";
+            }
+            comment.setContent(content);
+            Question question = questionService.getQuestionsById(comment.getEntityId());
+            vo.set("question", question);
+            vo.set("comment", comment);
+            comments.add(vo);
+        }
+
+        ViewObject pageVo = new ViewObject();
+        pageVo.set("pageNumber", page.getPageNum());
+        pageVo.set("totalPage", page.getPages());
+
+        ViewObject vos = new ViewObject();
+        //保存问题的相关信息
+        vos.set("comments", comments);
+        //保存分页相关信息
+        vos.set("pageVo", pageVo);
+        return vos;
+    }
+
     @RequestMapping(path = {"/user/{userId}/asks"}, method = {RequestMethod.GET})
     public String userQuestion(Model model, @PathVariable("userId") Integer userId, @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
         Integer pageNum = 1;
@@ -215,6 +256,36 @@ public class FollowController {
 
         model.addAttribute("userInfo", vo);
         return "userQuestion";
+    }
+
+
+    @RequestMapping(path = {"/user/{userId}/answers"}, method = {RequestMethod.GET})
+    public String userComments(Model model, @PathVariable("userId") Integer userId, @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
+        Integer pageNum = 1;
+        Integer pageSize = 20;
+
+        if (StringUtils.isNotBlank(pageNumStr)) {
+            //输入页码的是正整数就进行转换
+            if (pageNumStr.matches("^[1-9]\\d*$")) {
+                pageNum = Integer.valueOf(pageNumStr);
+            }
+        }
+
+        //获取问题信息
+        ViewObject vos = getComments(userId,pageNum, pageSize);
+        model.addAttribute("comments", vos.get("comments"));
+        model.addAttribute("pageVo", vos.get("pageVo"));
+
+        //获取用户相关信息
+        ViewObject vo = new ViewObject();
+        if (hostHolder.getUser() != null) {
+            vo = getLocalUserInfo(hostHolder.getUser().getId(),userId);
+        }
+        else {
+            vo = getLocalUserInfo(0,userId);
+        }
+        model.addAttribute("userInfo", vo);
+        return "userComment";
     }
 
 

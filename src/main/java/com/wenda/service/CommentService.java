@@ -2,6 +2,7 @@ package com.wenda.service;
 
 import com.wenda.dao.CommentDao;
 import com.wenda.model.Comment;
+import com.wenda.model.Question;
 import com.wenda.util.JsoupUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,6 @@ public class CommentService {
     }
 
     public List<Comment> getCommentsByEntity(Integer entityId, Integer entityType) {
-
         return commentDao.getCommentsByEntity(entityId,entityType);
     }
 
@@ -41,5 +41,9 @@ public class CommentService {
         String result = JsoupUtil.clean(comment.getContent());
         comment.setContent(sensitiveService.filter(result));
         return commentDao.updateComment(comment);
+    }
+
+    public List<Comment> getCommentByUserId(Integer userId) {
+        return commentDao.getCommentByUserId(userId);
     }
 }

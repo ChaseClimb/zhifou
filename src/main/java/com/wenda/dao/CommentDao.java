@@ -2,6 +2,7 @@ package com.wenda.dao;
 
 import com.wenda.model.Comment;
 import org.apache.ibatis.annotations.*;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -26,4 +27,7 @@ public interface CommentDao {
 
     @Update({"update ", TABLE_NAME, " set content=#{content},update_date=#{updateDate} where id=#{id}"})
     int updateComment(Comment comment);
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where user_id=#{userId}"})
+    List<Comment> getCommentByUserId(Integer userId);
 }
