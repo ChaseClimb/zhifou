@@ -5,8 +5,7 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>个人页</title>
-
+    <title>回答</title>
     <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
     <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
@@ -25,15 +24,15 @@
                 <div class="index-list">
                     <div class="profile-main">
                         <ul>
-                            <li class="activ"><a href="/user/${userInfo.user.id}/questions">动态</a></li>
-                            <li><a href="/user/${userInfo.user.id}/questions">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
+                            <li><a href="/user/${userInfo.user.id}/questions">动态</a></li>
+                            <li class="activ"><a href="/user/${userInfo.user.id}/questions">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
                             </li>
                             <li><a href="/user/${userInfo.user.id}/questions">提问<span
                                     class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
                             <li><a href="/user/${userInfo.user.id}/following">关注列表<span
-                                    class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
+                                    class="Tabs-meta">$!{userInfo.followeeCount}</span></a></li>
                             <li><a href="/user/${userInfo.user.id}/followers">粉丝列表<span
-                                    class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
+                                    class="Tabs-meta">$!{userInfo.followerCount}</span></a></li>
                         </ul>
                     </div>
 

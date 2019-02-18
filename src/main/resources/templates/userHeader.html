@@ -1,0 +1,72 @@
+<script type="text/javascript" src="/js/followUser.js"></script>
+<div class="col-xs-12 col-md-12">
+    <div class="user-card">
+        <div class="ProfileHeader-userCover">
+            <div class="user-cover UserCover--colorBlock"
+                 style="background-image:url(/img/coverImage.jpg)"></div>
+        </div>
+        <div class="profile-header-wrapper">
+            <div class="profile-header-main">
+                <div class="user-avatar profile-header-avatar" style="top: -25px;">
+                    #if(!${userInfo.user.headUrl})
+                    <img class="Avatar Avatar--large UserAvatar-inner" width="160" height="160"
+                         src="/img/avatar_big.jpg">
+                    #else
+                    <img class="Avatar Avatar--large UserAvatar-inner" width="160" height="160"
+                         src="${userInfo.user.headUrl}">
+                    #end
+                </div>
+                <div class="profile-header-content">
+                    <div class="profile-header-content-head">
+                        <h1 class="profile-header-title">
+                            <!--提交toId-->
+                            <input type="hidden" id="toId" value="$!{userInfo.user.id}"/>
+                            <span class="profile-header-name">$!{userInfo.user.name}</span>
+                            <span class="profile-header-headline">$!{userInfo.user.signature}</span>
+                        </h1>
+                    </div>
+                    <div class="profile-header-content-body">
+                        <div class="profile-header-info">
+                            <div class="profile-header-info-item">
+                                <i class="fa fa-mortar-board" aria-hidden="true"></i> 音乐制作
+                            </div>
+                            <div class="profile-header-info-item">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="profile-header-content-footer">
+                        <div class="profile-header-buttons">
+                            #if($!{userInfo.user.id}!=$!{user.id})
+                            #if($user)
+                            #if(!${userInfo.followed})
+                            <button type="button"
+                                    class="Button button-blue Follow-button" onclick="followUser('$!{userInfo.user.id}')"><i class="fa fa-plus"></i>
+                                关注他
+                            </button>
+                            #else
+                            <button type="button"
+                                    class="Button btn-primary button-grey userFollow-button" onclick="unfollowUser('$!{userInfo.user.id}')">
+                                取消关注
+                            </button>
+                            #end
+                            <button type="button" class="Button" id="sendMessage" data-toggle="modal"
+                                    data-target="#messageBox"><i class="fa fa-comments"
+                                                                 aria-hidden="true"></i>发私信
+                            </button>
+                            #else
+                            <button type="button"
+                                    class="Button button-blue userFollow-button"><i class="fa fa-plus"></i>
+                                关注他
+                            </button>
+                            <a href="/login"><button type="button" class="Button"><i class="fa fa-comments"
+                                                                                     aria-hidden="true"></i>发私信
+                            </button></a>
+                            #end
+                            #end
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

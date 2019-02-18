@@ -5,8 +5,7 @@
 
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>个人页</title>
-
+    <title>关注列表</title>
     <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
     <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" href="/css/global.css">
@@ -25,50 +24,64 @@
                 <div class="index-list">
                     <div class="profile-main">
                         <ul>
-                            <li class="activ"><a href="/user/${userInfo.user.id}/questions">动态</a></li>
+                            <li><a href="/user/${userInfo.user.id}/questions">动态</a></li>
                             <li><a href="/user/${userInfo.user.id}/questions">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
                             </li>
                             <li><a href="/user/${userInfo.user.id}/questions">提问<span
                                     class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
-                            <li><a href="/user/${userInfo.user.id}/following">关注列表<span
-                                    class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
+                            <li  class="activ"><a href="/user/${userInfo.user.id}/following">关注列表<span
+                                    class="Tabs-meta">$!{userInfo.followeeCount}</span></a></li>
                             <li><a href="/user/${userInfo.user.id}/followers">粉丝列表<span
-                                    class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
+                                    class="Tabs-meta">$!{userInfo.followerCount}</span></a></li>
                         </ul>
                     </div>
 
-                    #foreach($vo in $qVos)
+                    #foreach($followee in $followees)
                     <div class="index-list-item">
-                        <h2 class="title"><a href="/question/$!{vo.question.id}">$!{vo.question.title}</a></h2>
+                        #if($followee.user.id!=$user.id)
+                        #if(!$followee.followed)
+                        <button type="button"
+                                class="Button button-blue right-close btn-primary userFollow-button"
+                                onclick="followUser('$!{followee.user.id}')" style="display: block;"><i class="fa fa-plus"></i>
+                            关注他
+                        </button>
+                        #else
+                        <button class="Button button-blue right-close  btn-primary button-grey userFollow-button"
+                                style="display: block;" onclick="unfollowUser('$!{followee.user.id}')"> 取消关注
+                        </button>
+                        #end
+                        #end
                         <div class="user">
                             <div class="author-avatar">
                                 <a href="/user/$!{userInfo.user.id}" target="_blank">
-                                    #if(!${userInfo.user.headUrl})
+                                    #if(!${followee.user.headUrl})
                                     <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
                                     #else
-                                    <img class="avatar-38 mr-10 hidden-xs" src="${userInfo.user.headUrl}">
+                                    <img class="avatar-38 mr-10 hidden-xs" src="${followee.user.headUrl}">
                                     #end
                                 </a>
                             </div>
                             <div class="author-content">
                                 <div class="author-name">
-                                    <a href="/user/$!{userInfo.user.id}" target="_blank">$!{userInfo.user.name}</a>
+                                    <a href="/user/$!{followee.user.id}" target="_blank">$!{followee.user.name}</a>
                                 </div>
                                 <div class="author-nick">
-                                    $!{userInfo.user.signature}
+                                    $!{followee.user.signature}
                                 </div>
                             </div>
                         </div>
-                        <div class="summary">
-                            <div class="excerpt">
-                                $!{vo.question.content}
-                            </div>
+                        <div class="ContentItem-status">
+                            <span class="ContentItem-statusItem">$!{followee.questionCount} 问题</span>
+                            <span class="ContentItem-statusItem">$!{followee.commentCount} 回答</span>
+                            <span class="ContentItem-statusItem">$!{followee.followeeCount} 关注</span>
+                            <span class="ContentItem-statusItem">$!{followee.followerCount} 粉丝</span>
                         </div>
+
                     </div>
                     #end
 
                     <div class="text-center">
-                        #pagination("/user/$!{userInfo.user.id}", $!{pageVo})
+                      ##  #pagination("/user/$!{userInfo.user.id}", $!{pageVo})
                     </div>
 
 

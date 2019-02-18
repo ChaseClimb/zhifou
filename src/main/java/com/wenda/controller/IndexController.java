@@ -104,72 +104,9 @@ public class IndexController {
         return vos;
     }
 
-    private ViewObject getQuestions(Integer userId,Integer pageNum, Integer pageSize) {
-        PageHelper.startPage(pageNum, pageSize);
-        List<Question> questionList = null;
-        questionList = questionService.getQuestionsByUserid(userId);
-
-        PageInfo<Question> page = new PageInfo<>(questionList);
-        if (pageNum > page.getPages()) {
-            pageNum = page.getPages();
-            PageHelper.startPage(pageNum, pageSize);
-            questionList = questionService.getQuestionsByUserid(userId);
-            page = new PageInfo<>(questionList);
-        }
-
-        List<ViewObject> qVos = new ArrayList<>();
-        for (Question question : questionList) {
-            ViewObject vo = new ViewObject();
-            //去除html标签
-            String content = JsoupUtil.noneClean(question.getContent());
-            if (content.length() >= 104) {
-                content = content.substring(0, 104) + "...";
-            }
-
-            question.setContent(content);
-            vo.set("question", question);
-            qVos.add(vo);
-        }
-
-        ViewObject pageVo = new ViewObject();
-        pageVo.set("pageNumber", page.getPageNum());
-        pageVo.set("totalPage", page.getPages());
-
-        ViewObject vos = new ViewObject();
-        //保存问题的相关信息
-        vos.set("qVos", qVos);
-        //保存分页相关信息
-        vos.set("pageVo", pageVo);
-
-        return vos;
-    }
 
 
-    @RequestMapping(path = {"/user/{userId}"}, method = {RequestMethod.GET})
-    public String userIndex(Model model, @PathVariable("userId") Integer userId, @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
-        Integer pageNum = 1;
-        Integer pageSize = 20;
 
-        if (StringUtils.isNotBlank(pageNumStr)) {
-            //输入页码的是正整数就进行转换
-            if (pageNumStr.matches("^[1-9]\\d*$")) {
-                pageNum = Integer.valueOf(pageNumStr);
-            }
-        }
-
-        ViewObject vos = getQuestions(userId,pageNum, pageSize);
-        model.addAttribute("qVos", vos.get("qVos"));
-        model.addAttribute("pageVo", vos.get("pageVo"));
-
-        User user = userService.getUserById(userId);
-        ViewObject vo = new ViewObject();
-        vo.set("user", user);
-        vo.set("commentCount", commentService.getUserCommentCount(userId));
-        vo.set("questionCount",questionService.getUserQuestionCount(userId));
-
-        model.addAttribute("userInfo", vo);
-        return "user";
-    }
 
 
 

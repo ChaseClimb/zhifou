@@ -278,3 +278,13 @@
     cursor: pointer;
     border-radius: 3px;
 }
+
+.ContentItem-status{
+    margin-top: 15px;
+    color: #8590A6;
+    font-size: 14px;
+}
+
+.ContentItem-statusItem{
+    padding-right:10px;
+}

@@ -5,7 +5,7 @@ public class RedisKeyUtil {
     private static String BIZ_LIKE = "LIKE";
     private static String BIZ_DISLIKE = "DISLIKE";
     private static String BIZ_EVENTQUEUE = "EVENT_QUEUE";
-    // 获取粉丝
+    // 粉丝列表
     private static String BIZ_FOLLOWER = "FOLLOWER";
     // 关注列表
     private static String BIZ_FOLLOWEE = "FOLLOWEE";
