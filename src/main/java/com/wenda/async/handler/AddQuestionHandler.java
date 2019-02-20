@@ -4,6 +4,7 @@ package com.wenda.async.handler;
 import com.wenda.async.EventHandler;
 import com.wenda.async.EventModel;
 import com.wenda.async.EventType;
+import com.wenda.service.SearchService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

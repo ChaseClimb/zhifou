@@ -1,6 +1,6 @@
 <script>
     function go(preUrl) {
-        location.href = "/search?q="+preUrl+'&page=' + $(".page_input").val()
+        location.href = "/search?q=" + preUrl + '&page=' + $(".page_input").val()
     }
 </script>
 #macro(solrPagination $u $pageVo)
@@ -96,9 +96,11 @@
         #end
         #end
 
+        #if($ender>$PAGER_LEN)
         <li>
             <a href="javascript:;" style="border-bottom: none;border-top:none;cursor: default">...</a>
         </li>
+        #end
         #end
 
 
