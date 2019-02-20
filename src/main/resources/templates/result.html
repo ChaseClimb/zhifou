@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/user.css">
+</head>
+<body>
+#parse("header.html")
+#parse("solrPage.html")
+
+<div class="wrap">
+    <div class="container">
+        <div class="row mt-10">
+            <div class="col-xs-12 col-md-12 main">
+                <div class="index-list">
+                    <div class="profile-main">
+                        <ul>
+                            <li class="activ"><a href="javascript:;">搜索结果</a></li>
+                        </ul>
+                    </div>
+                    #foreach($vo in $vos)
+                    <div class="index-list-item">
+                        <h2 class="title"><a href="/question/$!{vo.question.id}" target="_blank">$!{vo.question.title}</a>
+                        </h2>
+                        <div class="user">
+                            <div class="author-avatar">
+                                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+                                    #if(!${vo.user.headUrl})
+                                    <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                                    #else
+                                    <img class="avatar-38 mr-10 hidden-xs" src="${vo.user.headUrl}">
+                                    #end
+                                </a>
+                            </div>
+                            <div class="author-content">
+                                <div class="author-name">
+                                    <a href="/user/$!{vo.user.id}"
+                                       target="_blank">$!{vo.user.name}</a>
+                                </div>
+                                <div class="author-nick">
+                                    $!{vo.user.signature}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="summary">
+                            <div class="excerpt">
+                                $!{vo.question.content}
+                            </div>
+                        </div>
+                    </div>
+
+                    #end
+
+
+                    #set($pre ='/search?q=')
+                    #set($q = $request.getParameter("q"))
+                    #set($t = $pre+$q)
+                    <div class="text-center">
+                        #solrPagination($t, $!{pageVo})
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#parse("footer.html")
+
+</body>
+</html>

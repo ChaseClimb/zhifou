@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/user.css">
+</head>
+<body>
+#parse("header.html")
+#parse("page.html")
+#macro (like_question1, $feedVo)
+<div class="index-list-item">
+    #if(${feedVo.feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">$!{feedVo.userName}赞了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">赞了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feedVo.feed.questionId}" target="_blank">$!{feedVo.feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+                #if(!${feedVo.feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feedVo.feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">$!{feedVo.feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feedVo.feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feedVo.feed.questionContent}
+        </div>
+    </div>
+</div>
+#end
+
+#macro (like_comment1, $feedVo)
+<div class="index-list-item">
+    #if(${feedVo.feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">$!{feedVo.userName}赞了该评论</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">赞了该评论</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feedVo.feed.questionId}" target="_blank">$!{feedVo.feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+
+                #if(!${feedVo.feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feedVo.feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">$!{feedVo.feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feedVo.feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feedVo.feed.commentContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+#macro (add_question1, $feedVo)
+<div class="index-list-item">
+    #if(${feedVo.feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">$!{feedVo.userName}发布了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">发布了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feedVo.feed.questionId}" target="_blank">$!{feedVo.feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+                #if(!${feedVo.feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feedVo.feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">$!{feedVo.feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feedVo.feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feedVo.feed.questionContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+#macro (comment_question1, $feedVo)
+<div class="index-list-item">
+    #if(${feedVo.feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">$!{feedVo.userName}回答了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">回答了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feedVo.feed.questionId}" target="_blank">$!{feedVo.feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+                #if(!${feedVo.feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feedVo.feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">$!{feedVo.feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feedVo.feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feedVo.feed.commentContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+#macro (follow_question1, $feedVo)
+<div class="index-list-item">
+    #if(${feedVo.feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">$!{feedVo.userName}关注了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">关注了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feedVo.feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feedVo.feed.questionId}" target="_blank">$!{feedVo.feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+                #if(!${feedVo.feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feedVo.feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">$!{feedVo.feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feedVo.feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feedVo.feed.questionContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+<div class="wrap">
+    <div class="container">
+
+        <div class="row mt-10">
+            <div class="col-xs-12 col-md-12 main">
+                <div class="index-list">
+                    <div class="profile-main">
+                        <ul>
+                            <li class="activ"><a href="/user/activities">最新动态</a></li>
+
+                        </ul>
+                    </div>
+                    #foreach($feedVo in $feedVos)
+                        #if($feedVo.feed.type == 0)
+                                #like_question1($feedVo)
+                        #elseif($feedVo.feed.type == 1)
+                                #like_comment1($feedVo)
+                        #elseif($feedVo.feed.type == 5)
+                                #add_question1($feedVo)
+                        #elseif($feedVo.feed.type == 2)
+                                #comment_question1($feedVo)
+                        #elseif($feedVo.feed.type == 3)
+                                #follow_question1($feedVo)
+                        #end
+
+                    #end
+
+                    <div class="text-center">
+                        #pagination("/user/$!{userInfo.user.id}/act", $!{pageVo})
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#parse("footer.html")
+
+</body>
+</html>

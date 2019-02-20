@@ -56,8 +56,8 @@ public class FeedController {
     }
 
 
-    @RequestMapping(path = {"/user/activities"}, method = {RequestMethod.GET})
-    public String activities(Model model,  @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
+    @RequestMapping(path = {"/user/act"}, method = {RequestMethod.GET})
+    public String act(Model model,  @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
         Integer pageNum = 1;
         Integer pageSize = 20;
 
@@ -98,7 +98,7 @@ public class FeedController {
             vo.set("userName",user.getName());
             feedVos.add(vo);
         }
-        model.addAttribute("feeds", feedVos);
+        model.addAttribute("feedVos", feedVos);
 
         ViewObject pageVo = new ViewObject();
         pageVo.set("pageNumber", page.getPageNum());
@@ -106,7 +106,7 @@ public class FeedController {
 
         model.addAttribute("pageVo", pageVo);
 
-        return "activity";
+        return "act";
     }
 
 }
