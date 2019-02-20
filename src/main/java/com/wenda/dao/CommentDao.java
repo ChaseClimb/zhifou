@@ -12,7 +12,7 @@ public interface CommentDao {
     String INSERT_FIELDS = " content,user_id,entity_id,entity_type,created_date,update_date,status ";
     String SELECT_FIELDS = " id, " + INSERT_FIELDS;
 
-    @Select({"select count(id) from ", TABLE_NAME, " where user_id=#{userId}"})
+    @Select({"select count(id) from ", TABLE_NAME, " where user_id=#{userId} and status=0"})
     Integer getUserCommentCount(Integer userId);
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME,
@@ -28,6 +28,12 @@ public interface CommentDao {
     @Update({"update ", TABLE_NAME, " set content=#{content},update_date=#{updateDate} where id=#{id}"})
     int updateComment(Comment comment);
 
-    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where user_id=#{userId}"})
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where user_id=#{userId} and status=0"})
     List<Comment> getCommentByUserId(Integer userId);
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id}"})
+    Comment getCommentById(int id);
+
+    @Update({"update ",TABLE_NAME," set status=1 where id=#{commentId}"})
+    int deleteComment(int commentId);
 }

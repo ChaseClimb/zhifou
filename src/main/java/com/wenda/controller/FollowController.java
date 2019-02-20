@@ -1,11 +1,11 @@
 package com.wenda.controller;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wenda.async.EventModel;
+import com.wenda.async.EventProducer;
+import com.wenda.async.EventType;
 import com.wenda.model.*;
-import com.wenda.service.CommentService;
-import com.wenda.service.FollowService;
-import com.wenda.service.QuestionService;
-import com.wenda.service.UserService;
+import com.wenda.service.*;
 import com.wenda.util.JsoupUtil;
 import com.wenda.util.WendaUtil;
 import org.apache.commons.lang.StringUtils;
@@ -37,6 +37,12 @@ public class FollowController {
 
     @Autowired
     FollowService followService;
+
+    @Autowired
+    FeedService feedService;
+
+    @Autowired
+    EventProducer eventProducer;
 
 
     private static final Logger logger = LoggerFactory.getLogger(FollowController.class);
@@ -81,12 +87,13 @@ public class FollowController {
 
         boolean b = followService.follow(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, questionId);
 
-        Map<String, Object> info = new HashMap<>();
-        info.put("headUrl", hostHolder.getUser().getHeadUrl());
-        info.put("name", hostHolder.getUser().getName());
-        info.put("id", hostHolder.getUser().getId());
-        info.put("count", followService.getFollowerCount(EntityType.ENTITY_QUESTION, questionId));
-        return WendaUtil.getJSONString(b ? 0 : 1, info);
+        //关注问题
+        eventProducer.fireEvent(new EventModel(EventType.FOLLOW)
+                .setActorId(hostHolder.getUser().getId())
+                .setEntityType(EntityType.ENTITY_QUESTION).setEntityId(questionId).setEntityOwnerId(q.getUserId()));
+
+
+        return WendaUtil.getJSONString(b ? 0 : 1);
     }
 
     @RequestMapping(path = {"/unfollowQuestion"}, method = {RequestMethod.POST})
@@ -103,10 +110,9 @@ public class FollowController {
 
         boolean b = followService.unfollow(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, questionId);
 
-        Map<String, Object> info = new HashMap<>();
-        info.put("id", hostHolder.getUser().getId());
-        info.put("count", followService.getFollowerCount(EntityType.ENTITY_QUESTION, questionId));
-        return WendaUtil.getJSONString(b ? 0 : 1, info);
+
+
+        return WendaUtil.getJSONString(b ? 0 : 1);
     }
 
 
@@ -289,6 +295,52 @@ public class FollowController {
     }
 
 
+    @RequestMapping(path = {"/user/{uid}/activities","/user/{uid}"}, method = {RequestMethod.GET})
+    public String activities(Model model, @PathVariable("uid") int userId, @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
+        Integer pageNum = 1;
+        Integer pageSize = 20;
+
+        if (StringUtils.isNotBlank(pageNumStr)) {
+            //输入页码的是正整数就进行转换
+            if (pageNumStr.matches("^[1-9]\\d*$")) {
+                pageNum = Integer.valueOf(pageNumStr);
+            }
+        }
+        PageHelper.startPage(pageNum, pageSize);
+        List<Feed> feeds = null;
+        feeds = feedService.getFeedsByUserId(userId);
+
+        PageInfo<Feed> page = new PageInfo<>(feeds);
+        if (pageNum > page.getPages()) {
+            pageNum = page.getPages();
+            PageHelper.startPage(pageNum, pageSize);
+            feeds = feedService.getFeedsByUserId(userId);
+            page = new PageInfo<>(feeds);
+        }
+
+        model.addAttribute("feeds", feeds);
+
+        ViewObject pageVo = new ViewObject();
+        pageVo.set("pageNumber", page.getPageNum());
+        pageVo.set("totalPage", page.getPages());
+
+        model.addAttribute("pageVo", pageVo);
+
+        //获取用户相关信息
+        ViewObject vo = new ViewObject();
+        if (hostHolder.getUser() != null) {
+            vo = getLocalUserInfo(hostHolder.getUser().getId(),userId);
+        }
+        else {
+            vo = getLocalUserInfo(0,userId);
+        }
+
+        model.addAttribute("userInfo", vo);
+        return "userActivity";
+    }
+
+
+
     private List<ViewObject> getUsersInfo(int localUserId, List<Integer> userIds) {
         List<ViewObject> userInfos = new ArrayList<ViewObject>();
         for (Integer uid : userIds) {
@@ -327,5 +379,7 @@ public class FollowController {
         vo.set("followerCount", followService.getFollowerCount(EntityType.ENTITY_USER, userId));
         return vo;
     }
+
+
 
 }

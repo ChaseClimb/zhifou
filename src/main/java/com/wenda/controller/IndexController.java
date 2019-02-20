@@ -51,10 +51,6 @@ public class IndexController {
     }
 
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public String test(Model model) {
-       return "test";
-    }
 
     private ViewObject getQuestions(Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);

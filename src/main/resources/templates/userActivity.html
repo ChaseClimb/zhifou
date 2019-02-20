@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>个人页</title>
+
+    <link rel="stylesheet" href="/plugins/bootstrap/css/bootstrap.min.css">
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/global.css">
+    <link rel="stylesheet" href="/css/user.css">
+
+</head>
+<body>
+#parse("header.html")
+#parse("page.html")
+<script type="text/javascript" src="/js/sendMessage.js"></script>
+
+#macro (like_question, $feed)
+<div class="index-list-item">
+    #if(${feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">他赞了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">赞了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feed.questionId}" target="_blank">$!{feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feed.ownerId}" target="_blank">
+                #if(!${feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feed.ownerId}" target="_blank">$!{feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feed.questionContent}
+        </div>
+    </div>
+</div>
+#end
+
+#macro (like_comment, $feed)
+<div class="index-list-item">
+    #if(${feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">他赞了该评论</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">赞了该评论</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feed.questionId}" target="_blank">$!{feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feed.ownerId}" target="_blank">
+
+                #if(!${feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feed.ownerId}" target="_blank">$!{feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feed.commentContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+#macro (add_question, $feed)
+<div class="index-list-item">
+    #if(${feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">他发布了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">发布了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feed.questionId}" target="_blank">$!{feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feed.ownerId}" target="_blank">
+                #if(!${feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feed.ownerId}" target="_blank">$!{feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feed.questionContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+#macro (comment_question, $feed)
+<div class="index-list-item">
+    #if(${feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">他回答了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">回答了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feed.questionId}" target="_blank">$!{feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feed.ownerId}" target="_blank">
+                #if(!${feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feed.ownerId}" target="_blank">$!{feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feed.commentContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+#macro (follow_question, $feed)
+<div class="index-list-item">
+    #if(${feed.userId}!=${user.id})
+    <div class="ActivityItem">
+        <span class="activity">他关注了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #else
+    <div class="ActivityItem">
+        <span class="activity">关注了该问题</span>
+        <span class="time">$date.format('yyyy-MM-dd HH:mm:ss', $feed.createdDate)</span>
+    </div>
+    #end
+    <h2 class="title"><a href="/question/$!{feed.questionId}" target="_blank">$!{feed.questionTitle}</a></h2>
+    <div class="user">
+        <div class="author-avatar">
+            <a href="/user/$!{feed.ownerId}" target="_blank">
+                #if(!${feed.ownerHead})
+                <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
+                #else
+                <img class="avatar-38 mr-10 hidden-xs" src="${feed.ownerHead}">
+                #end
+            </a>
+        </div>
+        <div class="author-content">
+            <div class="author-name">
+                <a href="/user/$!{feed.ownerId}" target="_blank">$!{feed.ownerName}</a>
+            </div>
+            <div class="author-nick">
+                $!{feed.ownerSignature}
+            </div>
+        </div>
+    </div>
+    <div class="summary">
+        <div class="excerpt">
+            $!{feed.questionContent}
+        </div>
+    </div>
+</div>
+#end
+
+
+<div class="wrap">
+    <div class="container">
+        <div class="row mt-10">
+            #parse("userHeader.html")
+            <div class="col-xs-12 col-md-12 main">
+                <div class="index-list">
+                    <div class="profile-main">
+                        <ul>
+                            <li class="activ"><a href="/user/${userInfo.user.id}/activities">动态</a></li>
+                            <li><a href="/user/${userInfo.user.id}/answers">回答<span class="Tabs-meta">$!{userInfo.commentCount}</span></a>
+                            </li>
+                            <li><a href="/user/${userInfo.user.id}/asks">提问<span
+                                    class="Tabs-meta">$!{userInfo.questionCount}</span></a></li>
+                            <li><a href="/user/${userInfo.user.id}/following">关注列表<span
+                                    class="Tabs-meta">$!{userInfo.followeeCount}</span></a></li>
+                            <li><a href="/user/${userInfo.user.id}/followers">粉丝列表<span
+                                    class="Tabs-meta">$!{userInfo.followerCount}</span></a></li>
+                        </ul>
+                    </div>
+
+                    #foreach($feed in $feeds)
+                        #if($feed.type == 0)
+                                #like_question($feed)
+                        #elseif($feed.type == 1)
+                                #like_comment($feed)
+                        #elseif($feed.type == 5)
+                                #add_question($feed)
+                        #elseif($feed.type == 2)
+                                #comment_question($feed)
+                        #elseif($feed.type == 3)
+                                #follow_question($feed)
+                        #end
+
+                    #end
+
+                    <div class="text-center">
+                        #pagination("/user/$!{userInfo.user.id}/activities", $!{pageVo})
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 模态框（Modal） -->
+    <div class="modal fade" id="messageBox" tabindex="-1" role="dialog"
+         aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+        <div class="modal-dialog">
+            <div class="modal-content" style="padding: 0 24px 32px;width: 536px; ">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title text-center" id="myModalLabel">
+                        发送私信
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row mb-20">
+                            <span style="font-size: 18px"><b>$!{userInfo.user.name}</b></span>
+
+                    </div>
+                    <div class="row mb-10">
+                    <textarea id="messageContent" placeholder="私信内容"
+                              style="width: 100%;resize:none;min-height: 200px;border-radius: 3px;border: 1px solid #ccc;"></textarea>
+                    </div>
+                </div>
+                <div class="footer" style="padding: 5px;text-align: right;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                    <button type="button" class="btn btn-primary" id="addMessage" onclick="addMessage()">
+                        发送
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+#parse("footer.html")
+
+</body>
+</html>

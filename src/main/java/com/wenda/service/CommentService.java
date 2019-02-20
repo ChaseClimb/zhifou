@@ -46,4 +46,12 @@ public class CommentService {
     public List<Comment> getCommentByUserId(Integer userId) {
         return commentDao.getCommentByUserId(userId);
     }
+
+    public Comment getCommentById(int id) {
+        return commentDao.getCommentById(id);
+    }
+
+    public int deleteComment(int commentId) {
+        return commentDao.deleteComment(commentId);
+    }
 }

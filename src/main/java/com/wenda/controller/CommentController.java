@@ -1,5 +1,8 @@
 package com.wenda.controller;
 
+import com.wenda.async.EventModel;
+import com.wenda.async.EventProducer;
+import com.wenda.async.EventType;
 import com.wenda.model.Comment;
 import com.wenda.model.EntityType;
 import com.wenda.model.HostHolder;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Date;
 
@@ -27,6 +31,9 @@ public class CommentController {
     @Autowired
     QuestionService questionService;
 
+
+    @Autowired
+    EventProducer eventProducer;
 
     private static final Logger logger = LoggerFactory.getLogger(CommentController.class);
 
@@ -50,6 +57,10 @@ public class CommentController {
 
             int count = commentService.getCommentCount(comment.getEntityId(), comment.getEntityType());
             questionService.updateCommentCount(comment.getEntityId(), count);
+
+            //回答问题
+            eventProducer.fireEvent(new EventModel(EventType.COMMENT).setActorId(comment.getUserId())
+                    .setEntityType(EntityType.ENTITY_COMMENT).setEntityId(comment.getId()).setEntityOwnerId(comment.getUserId()));
 
         } catch (Exception e) {
             logger.error("增加评论失败" + e.getMessage());
@@ -75,6 +86,24 @@ public class CommentController {
             logger.error("更新评论失败" + e.getMessage());
         }
         return "redirect:/question/" + questionId;
+    }
+
+    @RequestMapping(path = "/deleteComment", method = RequestMethod.POST)
+    @ResponseBody
+    public String deleteComment(@RequestParam("commentId") int commentId) {
+        try {
+            if (hostHolder.getUser() == null) {
+                return WendaUtil.getJSONString(999);
+            }
+            int rowCount = commentService.deleteComment(commentId);
+            if (rowCount>0){
+                return WendaUtil.getJSONString(0);
+            }
+        } catch (Exception e) {
+            logger.error("删除评论失败" + e.getMessage());
+            return WendaUtil.getJSONString(1, "删除评论失败");
+        }
+        return WendaUtil.getJSONString(1, "删除评论失败");
     }
 
 

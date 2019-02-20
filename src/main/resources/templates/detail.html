@@ -21,6 +21,8 @@
 <!--引入ckeditor-->
 <script type="text/javascript" src="/plugins/ckeditor/ckeditor.js"></script>
 <script type="text/javascript" src="/js/vote.js"></script>
+<script type="text/javascript" src="/js/followQuestion.js"></script>
+
 <script>
     $(function () {
         $(".answer-btn").click(function () {
@@ -54,8 +56,25 @@
             editor.setData($(this).parent().prev().prev().html());
         });
 
-    });
 
+    });
+    function deleteComment(commentId){
+        var r = confirm("是否删除该回答?");
+        if (r == true) {
+            //发送请求
+            $.post("/deleteComment", {"commentId": commentId}, function (data) {
+                if (data.code == 999) {
+                    window.location.href = '/login?next=' + window.encodeURIComponent(window.location.href);
+                } else if (data.code == 1) {
+                    alert(data.msg);
+                } else {
+                    location.reload();
+                }
+            },"json");
+        } else {
+            return;
+        }
+    }
 </script>
 <div class="question-header">
     <div class="container">
@@ -68,7 +87,17 @@
                     <span class="content">$!{question.content}</span>
                 </div>
                 <div class="question-button">
-                    <button type="button" class="Button button-blue follow-button">关注问题</button>
+                    #if($headInfo.questionOwner!=$user.id)
+                    #if(!$headInfo.followed)
+                    <button type="button" class="Button button-blue follow-button"
+                            onclick="followQuestion('${question.id}')">关注问题
+                    </button>
+                    #else
+                    <button type="button" class="Button button-grey follow-button"
+                            onclick="unfollowQuestion('${question.id}')">取消关注
+                    </button>
+                    #end
+                    #end
                 </div>
 
             </div>
@@ -77,7 +106,7 @@
             <div class="col-md-12 numberboard">
                 <div class="col-md-6 numberboard-item">
                     <div class="numberboard-name">关注</div>
-                    <strong class="numberboard">2</strong>
+                    <strong class="numberboard">$!{headInfo.followCount}</strong>
                 </div>
                 <div class="col-md-6 numberboard-item left-ine">
                     <div class="numberboard-name">点赞</div>
@@ -165,6 +194,9 @@
                         #if($!{user.id}==$!{comment.comment.userId})
                         <button type="button" class="button-plain edit" data-toggle="modal" data-target="#editComment">
                             <span class="fa fa-pencil-square-o">​</span> 编辑
+                        </button>
+                        <button type="button" class="button-plain delete" id="deleteComment" onclick="deleteComment('${comment.comment.id}')">
+                            <span class="fa fa-trash-o">​</span> 删除
                         </button>
                         #end
                         <input type="hidden" name="sss" value="$!{comment.comment.id}"/>

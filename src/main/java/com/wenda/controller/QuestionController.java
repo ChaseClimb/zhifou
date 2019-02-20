@@ -2,11 +2,11 @@ package com.wenda.controller;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wenda.async.EventModel;
+import com.wenda.async.EventProducer;
+import com.wenda.async.EventType;
 import com.wenda.model.*;
-import com.wenda.service.CommentService;
-import com.wenda.service.LikeService;
-import com.wenda.service.QuestionService;
-import com.wenda.service.UserService;
+import com.wenda.service.*;
 import com.wenda.util.WendaUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -38,6 +38,12 @@ public class QuestionController {
     @Autowired
     LikeService likeService;
 
+    @Autowired
+    FollowService followService;
+
+    @Autowired
+    EventProducer eventProducer;
+
     @RequestMapping(value = "/question/add", method = RequestMethod.POST)
     @ResponseBody
     public String addQuestion(String title, String content) {
@@ -56,8 +62,12 @@ public class QuestionController {
             }
             int rowCount = questionService.addQuestion(question);
             if (rowCount > 0) {
+                eventProducer.fireEvent(new EventModel(EventType.ADD_QUESTION).
+                        setActorId(hostHolder.getUser().getId()).setEntityType(EntityType.ENTITY_QUESTION).setEntityId(question.getId())
+                        .setEntityOwnerId(question.getUserId()));
                 return WendaUtil.getJSONString(0);
             }
+
         } catch (Exception e) {
             logger.error("增加题目失败" + e.getMessage());
         }
@@ -68,8 +78,19 @@ public class QuestionController {
     @RequestMapping(value = "/question/{qid}",method = RequestMethod.GET)
     public String questionDetail(Model model,@PathVariable("qid") Integer qid,@RequestParam(value = "page", defaultValue = "1") String pageNumStr){
         Question question = questionService.getQuestionsById(qid);
+
         model.addAttribute("question", question);
         model.addAttribute("questionLikeCount", likeService.getLikeCount(EntityType.ENTITY_QUESTION,question.getId()));
+
+        ViewObject headInfo = new ViewObject();
+        if (hostHolder.getUser() != null) {
+            headInfo.set("followed", followService.isFollower(hostHolder.getUser().getId(), EntityType.ENTITY_QUESTION, qid));
+        } else {
+            headInfo.set("followed", false);
+        }
+        headInfo.set("questionOwner",question.getUserId());
+        headInfo.set("followCount",followService.getFollowerCount(EntityType.ENTITY_QUESTION, qid));
+        model.addAttribute("headInfo",headInfo);
 
         Integer pageNum = 1;
         Integer pageSize = 20;
