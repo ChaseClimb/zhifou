@@ -1,0 +1,255 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理系统-知否</title>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Core CSS -->
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/boot-crm.css" rel="stylesheet" type="text/css">
+
+    <!--引入ckeditor-->
+    <script type="text/javascript" src="/plugins/ckeditor/ckeditor.js"></script>
+</head>
+
+<body>
+#parse("admin/commentPage.html")
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand">知否问答社区管理系统</a>
+        </div>
+        <!-- /.navbar-top-links -->
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav in" id="side-menu">
+                    <li><a href="/admin/questions" ><i class="fa fa-edit fa-fw"></i> 问题管理</a></li>
+                    <li><a href="/admin/comments" class="active"><i class="fa fa-edit fa-fw"></i> 回答管理</a></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right " style="margin-right: 30px">
+            <li class="dropdown user-avatar">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <span>${admin.name}</span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a href="/admin/logout">退出</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="page-wrapper" style="min-height: 680px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">回答管理</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-inline" action="/search/comments" method="get">
+                    <div class="form-group">
+                        <label>回答编号</label>
+                        #if(-1==${cid})
+                        <input type="text" class="form-control" name="cid" value="">
+                        #else
+                        <input type="text" class="form-control" name="cid" value="$!{cid}">
+                        #end
+                    </div>
+                    <div class="form-group">
+                        <label>回答内容</label>
+                        #if(-1==${keyword})
+                        <input type="text" class="form-control" name="q" value="">
+                        #else
+                        <input type="text" class="form-control" name="q" value="$!{keyword}">
+                        #end
+                    </div>
+                    <div class="form-group">
+                        <label>问题状态</label>
+                        <select class="form-control" name="status">
+                            <option value="-1" #if($status==-1)selected #end>--请选择--</option>
+                            <option value="0" #if($status==0)selected #end>正常状态</option>
+                            <option value="1" #if($status==1)selected #end>删除状态</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">查询</button>
+                    <button type="reset" class="btn btn-primary">清空</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">回答信息列表</div>
+                    <table class="table table-bordered table-striped"
+                           style="word-wrap:break-word; word-break:break-all;">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>回答内容</th>
+                            <th>链接</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        #foreach($vo in $vos)
+                        <tr>
+                            <td width="75px">$!{vo.comment.id}</td>
+                            <td>$!{vo.comment.content}</td>
+                            <td width="50px" style="text-align: center">
+                                <a href="/question/$!{vo.comment.entityId}" target="_blank">
+                                    <i class="fa fa-arrow-right"></i>
+                                </a>
+
+                            </td>
+                            #if($!{vo.comment.status}==0)
+                            <td width="50px">可用</td>
+                            #else
+                            <td width="50px">删除</td>
+                            #end
+                            <td width="94px">
+                                <a href="#" class="btn btn-primary btn-xs" data-toggle="modal"
+                                   data-target="#editComment" onclick="get('$!{vo.comment.id}','$!{vo.comment.entityId}')">修改</a>
+                                #if($!{vo.comment.status}==0)
+                                <a href="#" class="btn btn-danger btn-xs" onclick="deleteById('$!{vo.comment.id}','$!{vo.comment.entityId}')">
+                                    删除
+                                </a>
+                                #else
+                                <a href="#" class="btn btn-danger btn-xs" onclick="recover('$!{vo.comment.id}','$!{vo.comment.entityId}')">
+                                    恢复
+                                </a>
+                                #end
+                            </td>
+                        </tr>
+                        #end
+
+                        </tbody>
+                    </table>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        #set($pre ='/search/comments')
+        #set($cid = $request.getParameter("cid"))
+        #set($q = $request.getParameter("q"))
+        #set($status = $request.getParameter("status"))
+        #set($t = $pre+'?cid='+$cid+'&q='+$q+'&status='+$status)
+        <div class="text-center" style="margin-bottom: 60px">
+            #commentPagination($t, $!{pageVo})
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+
+
+</div>
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="editComment" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 0 24px 32px;width: 700px; ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title text-center" id="myModalLabel">
+                    编辑回答
+                </h4>
+            </div>
+            <form action="/admin/comments/update" method="post">
+                <input type="hidden" id="commentId" name="commentId"/>
+                <input type="hidden" id="questionId" name="questionId"/>
+                <div class="modal-body">
+                    <textarea class="ckeditor" id="editCk" name="editCk"></textarea>
+                </div>
+                <div class="footer" style="padding: 5px;text-align: right;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        修改回答
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    function get(id,questionId) {
+        //发送请求
+        $.get("/admin/comments/" + id, function (data) {
+            if (data.code == 999) {
+                window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+            } else if (data.code == 1) {
+                alert(data.msg);
+            } else {
+                $("#commentId").val(id);
+                $("#questionId").val(questionId);
+                var editor = CKEDITOR.instances.editCk;
+                editor.setData(data.comment.content);
+            }
+        }, "json");
+    }
+
+
+    function deleteById(id,questionId) {
+        var r = confirm("是否删除该回答?");
+        if (r == true) {
+            $.post("/admin/comments/delete/" + id, {"status": 1,"questionId":questionId}, function (data) {
+                if (data.code == 999) {
+                    window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+                } else if (data.code == 1) {
+                    alert(data.msg);
+                } else {
+                    location.reload();
+                }
+            }, "json");
+        } else {
+            return;
+        }
+
+    }
+
+
+    function recover(id,questionId) {
+        var r = confirm("是否恢复该回答？");
+        if (r == true) {
+            $.post("/admin/comments/recover/" + id, {"status": 0,"questionId":questionId}, function (data) {
+                if (data.code == 999) {
+                    window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+                } else if (data.code == 1) {
+                    alert(data.msg);
+                } else {
+                    location.reload();
+                }
+            }, "json");
+        } else {
+            return;
+        }
+
+    }
+
+</script>
+
+
+</body>
+</html>

@@ -8,6 +8,8 @@ import com.wenda.model.EntityType;
 import com.wenda.model.HostHolder;
 import com.wenda.service.CommentService;
 import com.wenda.service.QuestionService;
+import com.wenda.service.SensitiveService;
+import com.wenda.util.JsoupUtil;
 import com.wenda.util.WendaUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,8 @@ public class CommentController {
     @Autowired
     QuestionService questionService;
 
+    @Autowired
+    SensitiveService sensitiveService;
 
     @Autowired
     EventProducer eventProducer;
@@ -41,6 +45,8 @@ public class CommentController {
     public String addComment(@RequestParam("questionId") int questionId
             , @RequestParam("edi") String content) {
         try {
+            content =sensitiveService.filter(JsoupUtil.clean(content));
+
             Comment comment = new Comment();
             comment.setContent(content);
             if (hostHolder.getUser() != null) {
@@ -60,7 +66,10 @@ public class CommentController {
 
             //回答问题
             eventProducer.fireEvent(new EventModel(EventType.COMMENT).setActorId(comment.getUserId())
-                    .setEntityType(EntityType.ENTITY_COMMENT).setEntityId(comment.getId()).setEntityOwnerId(comment.getUserId()));
+                    .setEntityType(EntityType.ENTITY_COMMENT).setEntityId(comment.getId()).setEntityOwnerId(comment.getUserId())
+                    .setExt("content", content).setExt("status", String.valueOf(0))
+                    .setExt("questionId",String.valueOf(questionId)));
+
 
         } catch (Exception e) {
             logger.error("增加评论失败" + e.getMessage());
@@ -73,6 +82,7 @@ public class CommentController {
     public String updateComment(@RequestParam("commentId") int commentId
             , @RequestParam("questionId") int questionId, @RequestParam("editCk") String content) {
         try {
+            content =sensitiveService.filter(JsoupUtil.clean(content));
             Comment comment = new Comment();
             comment.setId(commentId);
             comment.setContent(content);
@@ -80,7 +90,16 @@ public class CommentController {
                 return "redirect:/question/" + questionId;
             }
             comment.setUpdateDate(new Date());
-            commentService.updateComment(comment);
+            int rowCount = commentService.updateComment(comment);
+            if (rowCount > 0) {
+                eventProducer.fireEvent(new EventModel(EventType.UPDATE_COMMENT).
+                        setEntityType(EntityType.ENTITY_COMMENT).
+                        setEntityId(comment.getId())
+                        .setExt("content", sensitiveService.filter(content)).setExt("status", String.valueOf(0))
+                        .setExt("questionId",String.valueOf(questionId)));
+
+                Thread.sleep(1000);
+            }
 
         } catch (Exception e) {
             logger.error("更新评论失败" + e.getMessage());
@@ -90,13 +109,24 @@ public class CommentController {
 
     @RequestMapping(path = "/deleteComment", method = RequestMethod.POST)
     @ResponseBody
-    public String deleteComment(@RequestParam("commentId") int commentId) {
+    public String deleteComment(@RequestParam("commentId") int commentId, @RequestParam("questionId") int questionId) {
         try {
             if (hostHolder.getUser() == null) {
                 return WendaUtil.getJSONString(999);
             }
             int rowCount = commentService.deleteComment(commentId);
-            if (rowCount>0){
+            if (rowCount > 0) {
+                Comment comment = commentService.getCommentByIdWithoutStatus(commentId);
+                if (comment == null) {
+                    throw new RuntimeException("删除问题失败");
+                }
+
+                eventProducer.fireEvent(new EventModel(EventType.CHANGE_STATUS).
+                        setEntityType(EntityType.ENTITY_COMMENT).
+                        setEntityId(comment.getId())
+                        .setExt("content", comment.getContent()).setExt("status", String.valueOf(1)).
+                                setExt("questionId",String.valueOf(questionId)));
+                Thread.sleep(1000);
                 return WendaUtil.getJSONString(0);
             }
         } catch (Exception e) {

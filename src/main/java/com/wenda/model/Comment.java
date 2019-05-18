@@ -1,16 +1,33 @@
 package com.wenda.model;
 
+import org.apache.solr.client.solrj.beans.Field;
+
 import java.util.Date;
 
 public class Comment {
+    @Field
     private int id;
+
+    @Field
     private int userId;
+
+    @Field
     private int entityId;
+
+    @Field
     private int entityType;
+
+    @Field("comment_content")
     private String content;
+
+    @Field
     private Date createdDate;
+
+    @Field
     private Date updateDate;
+
     //评论状态
+    @Field("comment_status")
     private int status;
 
     public int getId() {

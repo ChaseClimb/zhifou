@@ -14,8 +14,6 @@ public class CommentService {
     @Autowired
     CommentDao commentDao;
 
-    @Autowired
-    SensitiveService sensitiveService;
 
     public Integer getUserCommentCount(Integer userId) {
         return commentDao.getUserCommentCount(userId);
@@ -26,10 +24,6 @@ public class CommentService {
     }
 
     public int addComment(Comment comment) {
-
-        //comment.setContent(HtmlUtils.htmlEscape(comment.getContent()));
-        String result = JsoupUtil.clean(comment.getContent());
-        comment.setContent(sensitiveService.filter(result));
         return commentDao.addComment(comment);
     }
 
@@ -38,9 +32,9 @@ public class CommentService {
     }
 
     public int updateComment(Comment comment) {
-        String result = JsoupUtil.clean(comment.getContent());
+       /* String result = JsoupUtil.clean(comment.getContent());
         comment.setContent(sensitiveService.filter(result));
-        return commentDao.updateComment(comment);
+*/        return commentDao.updateComment(comment);
     }
 
     public List<Comment> getCommentByUserId(Integer userId) {
@@ -53,5 +47,18 @@ public class CommentService {
 
     public int deleteComment(int commentId) {
         return commentDao.deleteComment(commentId);
+    }
+
+    public List<Comment> getByEntityId(Integer id){
+        return commentDao.getByEntityId(id);
+    }
+
+
+    public Comment getCommentByIdWithoutStatus(int id) {
+        return commentDao.getCommentByIdWithoutStatus(id);
+    }
+
+    public int changeStatus(int cid, int status){
+        return commentDao.changeStatus(cid,status);
     }
 }

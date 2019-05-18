@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -312,7 +313,6 @@ public class JedisAdapter implements InitializingBean {
         }
         return 0;
     }
-
 
 
 

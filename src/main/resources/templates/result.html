@@ -27,7 +27,7 @@
                         </h2>
                         <div class="user">
                             <div class="author-avatar">
-                                <a href="/user/$!{feedVo.feed.ownerId}" target="_blank">
+                                <a href="/user/$!{vo.user.id}" target="_blank">
                                     #if(!${vo.user.headUrl})
                                     <img class="avatar-38 mr-10 hidden-xs" src="/img/avatar.jpg">
                                     #else
@@ -55,7 +55,7 @@
                     #end
 
 
-                    #set($pre ='/search?q=')
+                    #set($pre ='search?q=')
                     #set($q = $request.getParameter("q"))
                     #set($t = $pre+$q)
                     <div class="text-center">

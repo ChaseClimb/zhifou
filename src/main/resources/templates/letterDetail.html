@@ -25,7 +25,7 @@
                 #foreach($message in $messages)
                 <li>
                     <div class="letter-info">
-                        <span class="l-time">2019-02-11 14:22:27</span>
+                        <span class="l-time">$date.format('yyyy-MM-dd HH:mm:ss', ${message.message.createdDate})</span>
 
                     </div>
                     <div class="chat-headbox">

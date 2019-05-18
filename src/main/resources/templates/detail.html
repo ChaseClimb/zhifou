@@ -50,7 +50,7 @@
         });
 
         $(".button-plain.edit").click(function () {
-            var s = $(this).next().val();
+            var s = $(this).next().next().val();
             $("#commentId").val(s);
             var editor = CKEDITOR.instances.editCk;
             editor.setData($(this).parent().prev().prev().html());
@@ -58,11 +58,11 @@
 
 
     });
-    function deleteComment(commentId){
+    function deleteComment(commentId,questionId){
         var r = confirm("是否删除该回答?");
         if (r == true) {
             //发送请求
-            $.post("/deleteComment", {"commentId": commentId}, function (data) {
+            $.post("/deleteComment", {"commentId": commentId,"questionId":questionId}, function (data) {
                 if (data.code == 999) {
                     window.location.href = '/login?next=' + window.encodeURIComponent(window.location.href);
                 } else if (data.code == 1) {
@@ -112,7 +112,10 @@
                     <div class="numberboard-name">点赞</div>
                     <strong class="numberboard">$!{questionLikeCount}</strong>
                 </div>
+                <div class="numberboard-name" style="margin-top: 75px;text-align:center">发布于 $date.format('yyyy-MM-dd HH:mm:ss', $!{question.createdDate})</div>
+
             </div>
+
         </div>
     </div>
 </div>
@@ -189,17 +192,19 @@
 
 
                             </span>
-                        <button type="button" class="button-plain reply"><span class="fa fa-comment">​</span> 回复
-                        </button>
+
                         #if($!{user.id}==$!{comment.comment.userId})
                         <button type="button" class="button-plain edit" data-toggle="modal" data-target="#editComment">
                             <span class="fa fa-pencil-square-o">​</span> 编辑
                         </button>
-                        <button type="button" class="button-plain delete" id="deleteComment" onclick="deleteComment('${comment.comment.id}')">
+                        <button type="button" class="button-plain delete" id="deleteComment" onclick="deleteComment('${comment.comment.id}','$!{question.id}')">
                             <span class="fa fa-trash-o">​</span> 删除
                         </button>
+                        #else
+                        <button type="button" class="button-plain reply"><span class="fa fa-comment">​</span> 回复
+                        </button>
                         #end
-                        <input type="hidden" name="sss" value="$!{comment.comment.id}"/>
+                        <input type="hidden" value="$!{comment.comment.id}"/>
                     </div>
                 </div>
                 #end
@@ -235,7 +240,7 @@
                 <textarea class="ckeditor" name="edi" id="edi"></textarea>
                 <div style="float: right;padding: 20px;">
                     <input type="hidden" name="questionId" value="$!{question.id}"/>
-                    <button type="submit" class="btn btn-primary">提交回答</button>
+                    <button type="submit" class="btn btn-primary">发布回答</button>
                 </div>
             </form>
         </div>
@@ -259,7 +264,7 @@
             </div>
             <form action="/updateComment" method="post">
                 <input type="hidden" name="questionId" value="$!{question.id}"/>
-                <input type="hidden" id="commentId" name="commentId"/>
+                <input type="hidden" id="commentId" name="commentId" value=""/>
                 <div class="modal-body">
                     <textarea class="ckeditor" id="editCk" name="editCk"></textarea>
                 </div>
@@ -267,7 +272,7 @@
                     <button type="button" class="btn btn-default" data-dismiss="modal">取消
                     </button>
                     <button type="submit" class="btn btn-primary">
-                        提交回答
+                        确认修改
                     </button>
                 </div>
             </form>
@@ -275,7 +280,6 @@
     </div>
 </div>
 #parse("footer.html")
-
 </body>
 
 </html>

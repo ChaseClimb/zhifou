@@ -1,15 +1,30 @@
 package com.wenda.model;
 
+import org.apache.solr.client.solrj.beans.Field;
+
 import java.util.Date;
 
 public class Question {
+    @Field
     private int id;
+
+    @Field("question_title")
     private String title;
+
+    @Field("question_content")
     private String content;
+
+    @Field
     private Date createdDate;
+
+    @Field
     private Date updateDate;
+
+    @Field
     private int userId;
     private int commentCount;
+
+    @Field("question_status")
     private int status;
 
     public int getId() {

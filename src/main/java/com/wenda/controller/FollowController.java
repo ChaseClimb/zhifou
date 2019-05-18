@@ -55,6 +55,10 @@ public class FollowController {
         }
         boolean b = followService.follow(hostHolder.getUser().getId(), EntityType.ENTITY_USER, userId);
 
+        eventProducer.fireEvent(new EventModel(EventType.FOLLOW)
+                .setActorId(hostHolder.getUser().getId()).setEntityId(userId)
+                .setEntityType(EntityType.ENTITY_USER).setEntityOwnerId(userId));
+
         // 返回关注的人数并更新
         return WendaUtil.getJSONString(b ? 0 : 1, String.valueOf(followService.getFolloweeCount(hostHolder.getUser().getId(), EntityType.ENTITY_USER)));
     }

@@ -116,6 +116,10 @@ public class FeedHandler implements EventHandler {
         feedService.addFeed(feed);
     }
 
+    /**
+     * 添加问题、评论、点赞问题、点赞评论、关注
+     * @return
+     */
     @Override
     public List<EventType> getSupportEventTypes() {
         return Arrays.asList(new EventType[]{EventType.LIKE_QUESTION, EventType.LIKE_COMMENT, EventType.COMMENT, EventType.FOLLOW, EventType.ADD_QUESTION});

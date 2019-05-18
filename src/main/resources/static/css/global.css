@@ -2401,6 +2401,7 @@ ul.tagit{padding: 1px 5px;overflow:auto;margin-left:inherit;margin-right:inherit
     position: absolute;
     width: 100%;
     height: 126px;
+    bottom: -469px;
 }
 
 #footer .copyright {
@@ -2455,3 +2456,4 @@ ul.tagit{padding: 1px 5px;overflow:auto;margin-left:inherit;margin-right:inherit
     background-color: #8590a6;
     border: 1px solid #8590a6;
 }
+

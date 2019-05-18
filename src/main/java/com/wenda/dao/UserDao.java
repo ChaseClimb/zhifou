@@ -4,6 +4,7 @@ import com.wenda.model.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserDao {
@@ -19,4 +20,8 @@ public interface UserDao {
 
     @Insert({"insert into ",TABLE_NAME,"(",INSERT_FIELDS,") values(#{name},#{password},#{salt},#{headUrl},#{signature})"})
     void addUser(User user);
+
+    @Update({"update ",TABLE_NAME," set password = #{password} where id = #{id} "})
+    int update(User user);
+
 }

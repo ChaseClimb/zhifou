@@ -14,10 +14,7 @@ public class QuestionService {
     @Autowired
     QuestionDao questionDao;
 
-    @Autowired
-    SensitiveService sensitiveService;
-
-    public List<Question> selectAllQuestions(){
+    public List<Question> selectAllQuestions() {
         return questionDao.selectAllQuestions();
     }
 
@@ -30,12 +27,6 @@ public class QuestionService {
     }
 
     public int addQuestion(Question question) {
-        //对html标签过滤
-        question.setContent(JsoupUtil.noneClean(question.getContent()));
-        question.setTitle(JsoupUtil.noneClean(question.getTitle()));
-        //敏感词过滤
-        question.setTitle(sensitiveService.filter(question.getTitle()));
-        question.setContent(sensitiveService.filter(question.getContent()));
         return questionDao.addQuestion(question);
     }
 
@@ -43,7 +34,26 @@ public class QuestionService {
         return questionDao.getQuestionsById(qid);
     }
 
+    /**
+     * 不带问题状态查询
+     *
+     * @param qid
+     * @return
+     */
+    public Question getQuestionsByIdWithoutStatus(Integer qid) {
+        return questionDao.getQuestionsByIdWithoutStatus(qid);
+    }
+
     public int updateCommentCount(int id, int count) {
         return questionDao.updateCommentCount(id, count);
     }
+
+    public int update(Question question) {
+        return questionDao.update(question);
+    }
+
+    public int changeStatus(int qid, int status){
+        return questionDao.changeStatus(qid,status);
+    }
+
 }

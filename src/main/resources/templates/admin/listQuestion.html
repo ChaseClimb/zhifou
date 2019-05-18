@@ -1,0 +1,273 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>后台管理系统-知否</title>
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Core CSS -->
+    <link href="/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="/css/sb-admin-2.css" rel="stylesheet">
+    <!-- Custom Fonts -->
+    <link href="/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/boot-crm.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+#parse("admin/questionPage.html")
+<div id="wrapper">
+    <!-- Navigation -->
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <a class="navbar-brand">知否问答社区管理系统</a>
+        </div>
+        <!-- /.navbar-top-links -->
+
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+                <ul class="nav in" id="side-menu">
+                    <li><a href="/admin/questions" class="active"><i class="fa fa-edit fa-fw"></i> 问题管理</a></li>
+                    <li><a href="/admin/comments"><i class="fa fa-edit fa-fw"></i> 评论管理</a></li>
+                </ul>
+
+            </div>
+        </div>
+
+        <ul class="nav navbar-nav navbar-right " style="margin-right: 30px">
+            <li class="dropdown user-avatar">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+                    <span>${admin.name}</span>
+                </a>
+                <ul class="dropdown-menu" role="menu">
+                    <li>
+                        <a href="/admin/logout">退出</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="page-wrapper" style="min-height: 680px;">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">问题管理</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+
+        <!-- /.row -->
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <form class="form-inline" action="/search/questions" method="get">
+                    <div class="form-group">
+                        <label>问题编号</label>
+                        #if(-1==${qid})
+                        <input type="text" class="form-control" name="qid" value="">
+                        #else
+                        <input type="text" class="form-control" name="qid" value="$!{qid}">
+                        #end
+                    </div>
+                    <div class="form-group">
+                        <label>问题标题或描述</label>
+                        #if(-1==${keyword})
+                        <input type="text" class="form-control" name="q" value="">
+                        #else
+                        <input type="text" class="form-control" name="q" value="$!{keyword}">
+                        #end
+                    </div>
+                    <div class="form-group">
+                        <label>问题状态</label>
+                        <select class="form-control" name="status">
+                            <option value="-1" #if($status==-1)selected #end>--请选择--</option>
+                            <option value="0" #if($status==0)selected #end>正常状态</option>
+                            <option value="1" #if($status==1)selected #end>删除状态</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">查询</button>
+                    <button type="reset" class="btn btn-primary">清空</button>
+                </form>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">问题信息列表</div>
+                    <table class="table table-bordered table-striped"
+                           style="word-wrap:break-word; word-break:break-all;">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>标题</th>
+                            <th>描述</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        #foreach($vo in $vos)
+                        <tr>
+                            <td width="75px">$!{vo.question.id}</td>
+                            <td width="200px"><a href="/question/$!{vo.question.id}" target="_blank">$!{vo.question.title}</a>
+                            </td>
+                            <td>$!{vo.question.content}</td>
+                            #if($!{vo.question.status}==0)
+                            <td width="50px">可用</td>
+                            #else
+                            <td width="50px">删除</td>
+                            #end
+                            <td width="94px">
+                                <a href="#" class="btn btn-primary btn-xs" data-toggle="modal"
+                                   data-target="#editQuestionModal" onclick="get('$!{vo.question.id}')">修改</a>
+                                #if($!{vo.question.status}==0)
+                                <a href="#" class="btn btn-danger btn-xs" onclick="deleteById('$!{vo.question.id}')">
+                                    删除
+                                </a>
+                                #else
+                                <a href="#" class="btn btn-danger btn-xs" onclick="recover('$!{vo.question.id}')">
+                                    恢复
+                                </a>
+                                #end
+                            </td>
+                        </tr>
+                        #end
+
+                        </tbody>
+                    </table>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        #set($pre ='/search/questions')
+        #set($qid = $request.getParameter("qid"))
+        #set($q = $request.getParameter("q"))
+        #set($status = $request.getParameter("status"))
+        #set($t = $pre+'?qid='+$qid+'&q='+$q+'&status='+$status)
+        <div class="text-center" style="margin-bottom: 60px">
+            #questionPagination($t, $!{pageVo})
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+
+
+</div>
+
+<!-- 编辑模态框（Modal） -->
+<div class="modal fade" id="editQuestionModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 0 24px 32px;width: 536px; ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title text-center" id="myModalLabel">
+                    修改问题
+                </h4>
+            </div>
+
+            <input type="hidden" id="questionId" value=""/>
+            <div class="modal-body">
+                <div class="row mb-10">
+                    <input id="title" placeholder="写下你的问题，准确地描述问题更容易得到解答 "
+                           style="width: 100%;height:40px;border-radius: 3px;border: 1px solid #ccc;" required=""/>
+                </div>
+                <div class="row mb-10">
+                    <textarea id="content" placeholder="输入问题背景、条件等详细信息（选填） "
+                              style="width: 100%;resize:none;min-height: 100px;border-radius: 3px;border: 1px solid #ccc;"
+                    ></textarea>
+                </div>
+            </div>
+
+            <div class="footer" style="padding: 5px;text-align: right;">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                </button>
+                <button type="button" class="btn btn-primary" onclick="update()">
+                    修改问题
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    function get(id) {
+        //发送请求
+        $.get("/admin/questions/" + id, function (data) {
+            if (data.code == 999) {
+                window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+            } else if (data.code == 1) {
+                alert(data.msg);
+            } else {
+                $("#title").val(data.question.title);
+                $("#content").val(data.question.content);
+                $("#questionId").val(id);
+            }
+        }, "json");
+    }
+
+
+    function update() {
+        //获取文本框的值
+        var title = $("#title").val();
+        var content = $("#content").val();
+        var id = $("#questionId").val();
+        //发送请求
+        $.post("/admin/questions/update/" + id, {"title": title, "content": content}, function (data) {
+            if (data.code == 999) {
+                window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+            } else if (data.code == 1) {
+                alert(data.msg);
+            } else {
+                location.reload();
+            }
+        }, "json");
+    }
+
+
+    function deleteById(id) {
+        var r = confirm("是否删除该问题?此操作将导致该问题的评论被删除");
+        if (r == true) {
+            $.post("/admin/questions/delete/" + id, {"status": 1}, function (data) {
+                if (data.code == 999) {
+                    window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+                } else if (data.code == 1) {
+                    alert(data.msg);
+                } else {
+                    location.reload();
+                }
+            }, "json");
+        } else {
+            return;
+        }
+
+    }
+
+
+    function recover(id) {
+        var r = confirm("是否恢复该问题，包括其评论？");
+        if (r == true) {
+            $.post("/admin/questions/recover/" + id, {"status": 0}, function (data) {
+                if (data.code == 999) {
+                    window.location.href = '/admin/login?next=' + window.encodeURIComponent(window.location.href);
+                } else if (data.code == 1) {
+                    alert(data.msg);
+                } else {
+                    location.reload();
+                }
+            }, "json");
+        } else {
+            return;
+        }
+
+    }
+
+</script>
+
+
+</body>
+</html>

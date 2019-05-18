@@ -19,105 +19,108 @@ public class UserService {
     @Autowired
     LoginTicketDao loginTicketDao;
 
-    public User getUserById(int id){
+    public User getUserById(int id) {
         return userDao.getUserById(id);
     }
 
     public Map<String, Object> login(String username, String password, String vCode, String redisCode) {
-        Map<String,Object> map = new HashMap<>();
-        if(StringUtils.isBlank(username)){
-            map.put("msg","用户名不能为空");
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isBlank(username)) {
+            map.put("msg", "用户名不能为空");
             return map;
         }
-        if (StringUtils.isBlank(password)){
-            map.put("msg","密码不能为空");
+        if (StringUtils.isBlank(password)) {
+            map.put("msg", "密码不能为空");
             return map;
         }
-        if (StringUtils.isBlank(vCode)){
-            map.put("msg","验证码不为空");
+        if (StringUtils.isBlank(vCode)) {
+            map.put("msg", "验证码不为空");
             return map;
         }
-        if(redisCode==null){
-            map.put("msg","验证码已过期，请重新获取");
+        if (redisCode == null) {
+            map.put("msg", "验证码已过期，请重新获取");
             return map;
         }
-        if (!vCode.equalsIgnoreCase(redisCode)){
-            map.put("msg","验证码有误");
+        if (!vCode.equalsIgnoreCase(redisCode)) {
+            map.put("msg", "验证码有误");
             return map;
         }
 
         User user = userDao.selectByName(username);
-        if (user==null){
-            map.put("msg","用户名不存在");
+        if (user == null) {
+            map.put("msg", "用户名不存在");
             return map;
         }
-        if (!WendaUtil.MD5(password+user.getSalt()).equals(user.getPassword())){
-            map.put("msg","用户名或密码错误");
+        if (!WendaUtil.MD5(password + user.getSalt()).equals(user.getPassword())) {
+            map.put("msg", "用户名或密码错误");
             return map;
         }
         //存入ticket
         String ticket = addLoginTicket(user.getId());
-        map.put("ticket",ticket);
+        map.put("ticket", ticket);
         return map;
     }
 
 
-
-    public String addLoginTicket(int userId){
+    public String addLoginTicket(int userId) {
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(userId);
         Date date = new Date();
-        date.setTime(3600*24*1000+date.getTime());
+        date.setTime(3600 * 24 * 1000 + date.getTime());
         loginTicket.setExpired(date);
         loginTicket.setStatus(0);
-        loginTicket.setTicket(UUID.randomUUID().toString().replace("-",""));
+        loginTicket.setTicket(UUID.randomUUID().toString().replace("-", ""));
         loginTicketDao.addTicket(loginTicket);
         return loginTicket.getTicket();
     }
 
     public Map<String, Object> register(String username, String password, String vCode, String redisCode) {
-        Map<String,Object> map = new HashMap<>();
-        if(StringUtils.isBlank(username)){
-            map.put("msg","用户名不能为空");
+        Map<String, Object> map = new HashMap<>();
+        if (StringUtils.isBlank(username)) {
+            map.put("msg", "用户名不能为空");
             return map;
         }
-        if (StringUtils.isBlank(password)){
-            map.put("msg","密码不能为空");
+        if (StringUtils.isBlank(password)) {
+            map.put("msg", "密码不能为空");
             return map;
         }
-        if (StringUtils.isBlank(vCode)){
-            map.put("msg","验证码不为空");
+        if (StringUtils.isBlank(vCode)) {
+            map.put("msg", "验证码不为空");
             return map;
         }
-        if(redisCode==null){
-            map.put("msg","验证码已过期，请重新获取");
+        if (redisCode == null) {
+            map.put("msg", "验证码已过期，请重新获取");
             return map;
         }
-        if (!vCode.equalsIgnoreCase(redisCode)){
-            map.put("msg","验证码有误");
+        if (!vCode.equalsIgnoreCase(redisCode)) {
+            map.put("msg", "验证码有误");
             return map;
         }
 
         User user = userDao.selectByName(username);
-        if (user!=null){
-            map.put("msg","用户名已存在");
+        if (user != null) {
+            map.put("msg", "用户名已存在");
             return map;
         }
 
         user = new User();
         user.setName(username);
-        user.setSalt(UUID.randomUUID().toString().substring(0,5));
-        user.setPassword(WendaUtil.MD5(password+user.getSalt()));
+        user.setSalt(UUID.randomUUID().toString().substring(0, 5));
+        user.setPassword(WendaUtil.MD5(password + user.getSalt()));
         userDao.addUser(user);
 
         String ticket = addLoginTicket(user.getId());
-        map.put("ticket",ticket);
+        map.put("ticket", ticket);
 
         return map;
     }
 
     public void logout(String ticket) {
-        loginTicketDao.updateStatus(ticket,1);
+        loginTicketDao.updateStatus(ticket, 1);
+    }
 
+    public int update(User user) {
+        int rowCount = userDao.update(user);
+        return rowCount > 0 ? rowCount : 0;
     }
 }

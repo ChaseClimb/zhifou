@@ -20,6 +20,12 @@ public interface MessageDao {
             " where conversation_id=#{conversationId} order by created_date desc"})
     List<Message> getConversationDetail(String conversationId);
 
+
+    /**
+     * 聊天列表查询
+     * @param userId
+     * @return
+     */
     //复杂的sql语句，子查询先排序 再分组（取最新） 再排序
     @Select({"select ", INSERT_FIELDS, " ,count(id) as id from ( select * from ", TABLE_NAME, " where from_id=#{userId} or to_id=#{userId} order by created_date desc) tt group by conversation_id  order by created_date desc"})
     List<Message> getConversationList(int userId);
@@ -29,4 +35,7 @@ public interface MessageDao {
 
     @Update({"update ",TABLE_NAME," set has_read = 1 where to_id=#{userId} and conversation_id=#{conversationId} "})
     int readMessage(@Param("userId") int localUserId,@Param("conversationId") String conversationId);
+
+    @Select({"select count(*) from ",TABLE_NAME," where to_id = #{userId} and has_read = 0"})
+    int getUnreadMessageCount(Integer userId);
 }

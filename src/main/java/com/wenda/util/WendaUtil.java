@@ -10,7 +10,7 @@ import java.util.Map;
 public class WendaUtil {
     private static final Logger logger = LoggerFactory.getLogger(WendaUtil.class);
     public static int ANONYMOUS_USERID = 3;
-    public static int SYSTEM_USERID = 3;//系统消息
+    public static int SYSTEM_USERID = 996;//系统消息
 
     public static String getJSONString(int code) {
         JSONObject json = new JSONObject();

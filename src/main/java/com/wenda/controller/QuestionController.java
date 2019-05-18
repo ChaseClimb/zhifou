@@ -7,6 +7,7 @@ import com.wenda.async.EventProducer;
 import com.wenda.async.EventType;
 import com.wenda.model.*;
 import com.wenda.service.*;
+import com.wenda.util.JsoupUtil;
 import com.wenda.util.WendaUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -44,13 +45,19 @@ public class QuestionController {
     @Autowired
     EventProducer eventProducer;
 
+    @Autowired
+    SensitiveService sensitiveService;
+
     @RequestMapping(value = "/question/add", method = RequestMethod.POST)
     @ResponseBody
     public String addQuestion(String title, String content) {
         try {
             Question question = new Question();
-            question.setContent(content);
-            question.setTitle(title);
+            //对标题和内容进行过滤
+            String cleanContent = sensitiveService.filter(JsoupUtil.noneClean(content));
+            String cleanTitle = sensitiveService.filter(JsoupUtil.noneClean(title));
+            question.setTitle(cleanTitle);
+            question.setContent(cleanContent);
             question.setCreatedDate(new Date());
             question.setUpdateDate(new Date());
             question.setCommentCount(0);
@@ -62,25 +69,32 @@ public class QuestionController {
             }
             int rowCount = questionService.addQuestion(question);
             if (rowCount > 0) {
+
+
                 eventProducer.fireEvent(new EventModel(EventType.ADD_QUESTION).
                         setActorId(hostHolder.getUser().getId()).setEntityType(EntityType.ENTITY_QUESTION).setEntityId(question.getId())
-                        .setEntityOwnerId(question.getUserId()));
+                        .setEntityOwnerId(question.getUserId()).setExt("title", cleanTitle).setExt("content", cleanContent).setExt("status",String.valueOf(0)));
                 return WendaUtil.getJSONString(0);
             }
 
         } catch (Exception e) {
-            logger.error("增加题目失败" + e.getMessage());
+            logger.error("新增问题失败" + e.getMessage());
         }
-        return WendaUtil.getJSONString(1, "失败");
+        return WendaUtil.getJSONString(1, "新增问题失败");
     }
 
 
-    @RequestMapping(value = "/question/{qid}",method = RequestMethod.GET)
-    public String questionDetail(Model model,@PathVariable("qid") Integer qid,@RequestParam(value = "page", defaultValue = "1") String pageNumStr){
+    @RequestMapping(value = "/question/{qid}", method = RequestMethod.GET)
+    public String questionDetail(Model model, @PathVariable("qid") Integer qid, @RequestParam(value = "page", defaultValue = "1") String pageNumStr) {
         Question question = questionService.getQuestionsById(qid);
 
+        //抛出异常
+        if (question==null){
+            throw new RuntimeException("您访问的问题不存在，可能已被删除");
+        }
+
         model.addAttribute("question", question);
-        model.addAttribute("questionLikeCount", likeService.getLikeCount(EntityType.ENTITY_QUESTION,question.getId()));
+        model.addAttribute("questionLikeCount", likeService.getLikeCount(EntityType.ENTITY_QUESTION, question.getId()));
 
         ViewObject headInfo = new ViewObject();
         if (hostHolder.getUser() != null) {
@@ -88,9 +102,9 @@ public class QuestionController {
         } else {
             headInfo.set("followed", false);
         }
-        headInfo.set("questionOwner",question.getUserId());
-        headInfo.set("followCount",followService.getFollowerCount(EntityType.ENTITY_QUESTION, qid));
-        model.addAttribute("headInfo",headInfo);
+        headInfo.set("questionOwner", question.getUserId());
+        headInfo.set("followCount", followService.getFollowerCount(EntityType.ENTITY_QUESTION, qid));
+        model.addAttribute("headInfo", headInfo);
 
         Integer pageNum = 1;
         Integer pageSize = 20;
@@ -126,13 +140,13 @@ public class QuestionController {
             } else {
                 vo.set("liked", likeService.getLikeStatus(hostHolder.getUser().getId(), EntityType.ENTITY_COMMENT, comment.getId()));
             }
-            vo.set("likeCount",likeService.getLikeCount(EntityType.ENTITY_COMMENT,comment.getId()));
+            vo.set("likeCount", likeService.getLikeCount(EntityType.ENTITY_COMMENT, comment.getId()));
 
             comments.add(vo);
         }
 
         model.addAttribute("comments", comments);
-        model.addAttribute("pageVo",pageVo);
+        model.addAttribute("pageVo", pageVo);
         return "detail";
     }
 

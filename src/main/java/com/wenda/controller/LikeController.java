@@ -100,8 +100,8 @@ public class LikeController {
             long likeCount = likeService.cancelFollow(hostHolder.getUser().getId(), entityType, entityId);
             return WendaUtil.getJSONString(0, String.valueOf(likeCount));
         } catch (Exception e) {
-            logger.error("点赞失败", e.getMessage());
-            return WendaUtil.getJSONString(1, "点赞失败");
+            logger.error("取消点赞失败", e.getMessage());
+            return WendaUtil.getJSONString(1, "取消点赞失败");
         }
     }
 

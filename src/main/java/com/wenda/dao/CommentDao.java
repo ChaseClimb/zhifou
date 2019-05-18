@@ -12,11 +12,13 @@ public interface CommentDao {
     String INSERT_FIELDS = " content,user_id,entity_id,entity_type,created_date,update_date,status ";
     String SELECT_FIELDS = " id, " + INSERT_FIELDS;
 
+
+
     @Select({"select count(id) from ", TABLE_NAME, " where user_id=#{userId} and status=0"})
     Integer getUserCommentCount(Integer userId);
 
     @Select({"select ", SELECT_FIELDS, " from ", TABLE_NAME,
-            " where entity_id=#{entityId} and entity_type=#{entityType} and status=0 order by created_date asc"})
+            " where entity_id=#{entityId} and entity_type=#{entityType} and status=0 order by created_date"})
     List<Comment> getCommentsByEntity(@Param("entityId") Integer entityId, @Param("entityType") Integer entityType);
 
     @Insert({"insert into ", TABLE_NAME, " (", INSERT_FIELDS, ") values (#{content},#{userId},#{entityId},#{entityType},#{createdDate},#{updateDate},#{status})"})
@@ -31,9 +33,24 @@ public interface CommentDao {
     @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where user_id=#{userId} and status=0"})
     List<Comment> getCommentByUserId(Integer userId);
 
-    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id}"})
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id} and status = 0"})
     Comment getCommentById(int id);
 
     @Update({"update ",TABLE_NAME," set status=1 where id=#{commentId}"})
     int deleteComment(int commentId);
+
+
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where entity_id=#{id}"})
+    List<Comment> getByEntityId(Integer id);
+
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME})
+    List<Comment> solrComment();
+
+    @Select({"select ",SELECT_FIELDS," from ",TABLE_NAME," where id=#{id}"})
+    Comment getCommentByIdWithoutStatus(int id);
+
+    @Update({"update ", TABLE_NAME, " set update_date=now(),status=#{status} where id = #{id}"})
+    int changeStatus(@Param("id")int cid,@Param("status")int status);
 }

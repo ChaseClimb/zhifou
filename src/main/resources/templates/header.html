@@ -1,6 +1,7 @@
 <script type="text/javascript" src="/js/jquery.min.js"></script>
 <script type="text/javascript" src="/plugins/bootstrap/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="/js/addQuestion.js"></script>
+<script type="text/javascript" src="/js/updatePassword.js"></script>
 <div class="top-common-nav mb-50">
     <nav class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
@@ -21,20 +22,18 @@
                     <li>
                         <a href="/user/act" class="navItem">动态 </a>
                     </li>
-                    <li>
-                        <a href="javascript:;" class="navItem ">文章 </a>
-                    </li>
                 </ul>
                 <form class="navbar-form navbar-left " role="search" id="top-search-form"
                       action="/search" method="GET">
                     <div class="input-group">
                         <input type="text" name="q" id="searchBox" class="form-control"
-                               placeholder="有问题，先搜搜看 " style="width: 326px; ">
+                               placeholder="有问题，先搜搜看 " style="width: 326px; " value="$!{keyword}">
                         <button class="input-group-addon btn " type="submit "><i class="fa fa-search"></i></button>
                     </div>
                 </form>
                 #if($user)
-                <button type="button" class="btn button-blue ask-button" data-toggle="modal" data-target="#myModal">提问</button>
+                <button type="button" class="btn button-blue ask-button" data-toggle="modal" data-target="#myModal">提问
+                </button>
                 #end
                 <ul class="nav navbar-nav navbar-right ">
 
@@ -46,6 +45,21 @@
                     <li>
                         <a href="/msg/list" class="active" id="unread_messages"><i
                                 class="fa fa-envelope fa-lg " style="color: #8590A6; "></i></a>
+                    </li>
+                    <li>
+                        #if(${unReadMessageCount}!=0)
+                        <a href="/msg/list" style="
+                                background: #e84a4a;
+                                color: #FFF;
+                                border-radius: 50px;
+                                line-height: 16px;
+                                min-height: 16px;
+                                outline: medium none;
+                                margin-top: 14px;
+                                padding: 0 4px;
+                                text-align: center;
+                                z-index: 10;">$!{unReadMessageCount}</a>
+                        #end
                     </li>
                     <li class="dropdown user-avatar">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown"
@@ -63,6 +77,9 @@
                             </li>
                             <li>
                                 <a href="/msg/list">我的私信</a>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="modal" data-target="#updatePasswordModal">修改密码</a>
                             </li>
                             <li>
                                 <a href="#">设置</a>
@@ -94,23 +111,64 @@
                     提问
                 </h4>
             </div>
+            <form id="addQuestion">
+                <div class="modal-body">
+                    <div class="row mb-10">
+                        <input id="title" placeholder="写下你的问题，准确地描述问题更容易得到解答 "
+                               style="width: 100%;height:40px;border-radius: 3px;border: 1px solid #ccc;" required=""/>
+                    </div>
+                    <div class="row mb-10">
+                    <textarea id="content" placeholder="输入问题背景、条件等详细信息（选填） "
+                              style="width: 100%;resize:none;min-height: 100px;border-radius: 3px;border: 1px solid #ccc;"
+                    ></textarea>
+                    </div>
+                </div>
+
+                <div class="footer" style="padding: 5px;text-align: right;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        发布问题
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="updatePasswordModal" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true" data-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="padding: 0 24px 32px;width: 536px; ">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    ×
+                </button>
+                <h4 class="modal-title text-center">
+                    修改密码
+                </h4>
+            </div>
             <div class="modal-body">
                 <div class="row mb-10">
-                    <input id="title" placeholder="写下你的问题，准确地描述问题更容易得到解答 "
+                    <input id="password" type="password" placeholder="输入旧密码"
                            style="width: 100%;height:40px;border-radius: 3px;border: 1px solid #ccc;" required=""/>
                 </div>
                 <div class="row mb-10">
-                    <textarea id="content" placeholder="输入问题背景、条件等详细信息（选填） "
-                                                      style="width: 100%;resize:none;min-height: 100px;border-radius: 3px;border: 1px solid #ccc;"></textarea>
+                    <input id="newPassword" type="password" placeholder="输入新密码"
+                           style="width: 100%;height:40px;border-radius: 3px;border: 1px solid #ccc;" required=""
+                    />
                 </div>
             </div>
+
             <div class="footer" style="padding: 5px;text-align: right;">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消
                 </button>
-                <button type="button" class="btn btn-primary" id="addQuestion" onclick="addQuestion()">
-                    发布问题
+                <button type="button" class="btn btn-primary" onclick=" updatePassword()">
+                    修改密码
                 </button>
             </div>
         </div>
     </div>
 </div>
+

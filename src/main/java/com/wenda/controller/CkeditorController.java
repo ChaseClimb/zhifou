@@ -30,11 +30,12 @@ public class CkeditorController {
     //名字upload是固定的
     public String ckeditorUpload(@RequestParam("upload") MultipartFile file, String CKEditorFuncNum) throws Exception {
         try {
+            //上传文件返回七牛云路径
             String fileUrl = qiniuService.saveImage(file);
             if (fileUrl == null) {
                 return WendaUtil.getJSONString(1, "上传图片失败");
             }
-            //实现图片回显，基本上是固定代码，只需改路劲即可
+            //Ckeditor 实现图片回显，固定代码，只需改路径即可
             StringBuffer sb = new StringBuffer();
             sb.append("<script type=\"text/javascript\">");
             sb.append("window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ",'" + fileUrl

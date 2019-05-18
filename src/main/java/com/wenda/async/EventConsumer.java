@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ThreadPoolExecutor;
 
 @Service
 public class EventConsumer implements InitializingBean, ApplicationContextAware {
@@ -29,6 +30,7 @@ public class EventConsumer implements InitializingBean, ApplicationContextAware 
 
     /**
      * 将事件类型（EventType）和事件处理器（EventHandler）关联起来
+     *
      * @throws Exception
      */
 
@@ -68,6 +70,7 @@ public class EventConsumer implements InitializingBean, ApplicationContextAware 
                             continue;//去掉key
                         }
                         EventModel eventModel = JSON.parseObject(message, EventModel.class);
+
                         if (!config.containsKey(eventModel.getType())) {
                             logger.error("不能识别的事件");
                             continue;
