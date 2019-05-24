@@ -44,7 +44,7 @@ public class AdminCommentController {
 
     @RequestMapping(path = {"/admin/comments"}, method = {RequestMethod.GET})
     public String list() {
-        if (adminHostHolder.getUser()==null){
+        if (adminHostHolder.getUser() == null) {
             return "redirect:/admin/login";
         }
         return "/search/comments?qid=-1&q=-1&status=-1";
@@ -53,7 +53,7 @@ public class AdminCommentController {
     @RequestMapping(path = {"/admin/comments/{id}"}, method = {RequestMethod.GET})
     @ResponseBody
     public String get(@PathVariable("id") Integer id) {
-        if (adminHostHolder.getUser()==null){
+        if (adminHostHolder.getUser() == null) {
             return WendaUtil.getJSONString(999);
         }
         Comment comment = commentService.getCommentByIdWithoutStatus(id);
@@ -71,10 +71,10 @@ public class AdminCommentController {
                                 @RequestParam("commentId") int commentId,
                                 @RequestParam("editCk") String content) {
         try {
-            if (adminHostHolder.getUser()==null){
+            if (adminHostHolder.getUser() == null) {
                 return "redirect:/admin/login";
             }
-            content =sensitiveService.filter(JsoupUtil.clean(content));
+            content = sensitiveService.filter(JsoupUtil.clean(content));
 
             Comment comment = new Comment();
             comment.setId(commentId);
@@ -87,7 +87,7 @@ public class AdminCommentController {
                         setEntityType(EntityType.ENTITY_COMMENT).
                         setEntityId(comment.getId())
                         .setExt("content", sensitiveService.filter(content)).setExt("status", String.valueOf(0))
-                .setExt("questionId",String.valueOf(questionId)));
+                        .setExt("questionId", String.valueOf(questionId)));
 
                 Thread.sleep(1000);
             }
@@ -101,12 +101,14 @@ public class AdminCommentController {
 
     @RequestMapping(path = {"/admin/comments/delete/{id}"}, method = {RequestMethod.POST})
     @ResponseBody
-    public String delete(@PathVariable("id") Integer id, Integer status,Integer questionId) {
+    public String delete(@PathVariable("id") Integer id, Integer status, Integer questionId) {
         try {
-            if (adminHostHolder.getUser()==null){
+            if (adminHostHolder.getUser() == null) {
                 return WendaUtil.getJSONString(999);
             }
-            int rowCount = commentService.changeStatus(id, status);
+            commentService.changeStatus(id, status);
+            int commentCount = questionService.getQuestionsById(questionId).getCommentCount();
+            int rowCount = questionService.updateCommentCount(questionId, commentCount - 1);
             if (rowCount > 0) {
                 Comment comment = commentService.getCommentByIdWithoutStatus(id);
                 if (comment == null) {
@@ -117,7 +119,7 @@ public class AdminCommentController {
                         setEntityType(EntityType.ENTITY_COMMENT).
                         setEntityId(comment.getId())
                         .setExt("content", comment.getContent()).setExt("status", String.valueOf(status)).
-                        setExt("questionId",String.valueOf(questionId)));
+                                setExt("questionId", String.valueOf(questionId)));
                 Thread.sleep(1000);
                 return WendaUtil.getJSONString(0);
             }
@@ -131,9 +133,9 @@ public class AdminCommentController {
 
     @RequestMapping(path = {"/admin/comments/recover/{id}"}, method = {RequestMethod.POST})
     @ResponseBody
-    public String recover(@PathVariable("id") Integer id, Integer status,Integer questionId) {
+    public String recover(@PathVariable("id") Integer id, Integer status, Integer questionId) {
         try {
-            if (adminHostHolder.getUser()==null){
+            if (adminHostHolder.getUser() == null) {
                 return WendaUtil.getJSONString(999);
             }
             int rowCount = commentService.changeStatus(id, status);
@@ -146,7 +148,7 @@ public class AdminCommentController {
                         setEntityType(EntityType.ENTITY_COMMENT).
                         setEntityId(comment.getId())
                         .setExt("content", comment.getContent()).setExt("status", String.valueOf(status))
-                        .setExt("questionId",String.valueOf(questionId)));
+                        .setExt("questionId", String.valueOf(questionId)));
                 Thread.sleep(1000);
                 return WendaUtil.getJSONString(0);
             }

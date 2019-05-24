@@ -4,6 +4,7 @@ import com.wenda.async.EventHandler;
 import com.wenda.async.EventModel;
 import com.wenda.async.EventType;
 import com.wenda.model.EntityType;
+import com.wenda.model.HostHolder;
 import com.wenda.model.Message;
 import com.wenda.model.User;
 import com.wenda.service.MessageService;
@@ -33,17 +34,21 @@ public class LikeHandler implements EventHandler {
         message.setCreatedDate(new Date());
         User user = userService.getUserById(model.getActorId());
         if (model.getEntityType() == EntityType.ENTITY_COMMENT) {
-            message.setContent("用户 "+user.getName()+" 赞了你的评论,localhost:8080/question/"+model.getEntityId());
+            //41     1
+            if (model.getEntityOwnerId() != model.getActorId()) {
+                message.setContent("用户 " + user.getName() + " 赞了你的评论,localhost:8080/question/" + model.getEntityId());
+                messageService.addMessage(message);
+            }
+        } else {
+            if (model.getEntityOwnerId() != model.getActorId()) {
+                message.setContent("用户 " + user.getName() + " 赞了你的问题,localhost:8080/question/" + model.getEntityId());
+                messageService.addMessage(message);
+            }
         }
-        else{
-            message.setContent("用户 "+user.getName()+" 赞了你的问题,localhost:8080/question/"+model.getEntityId());
-        }
-
-        messageService.addMessage(message);
     }
 
     @Override
     public List<EventType> getSupportEventTypes() {
-        return Arrays.asList(EventType.LIKE_COMMENT,EventType.LIKE_QUESTION);
+        return Arrays.asList(EventType.LIKE_COMMENT, EventType.LIKE_QUESTION);
     }
 }

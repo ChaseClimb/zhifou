@@ -1,0 +1,131 @@
+<script>
+    function go(preUrl) {
+        location.href = "/msg/detail?conversationId=" + preUrl + '&page=' + $(".page_input").val()
+    }
+</script>
+#macro(letterPagination $u $pageVo)
+#set($BEHIND_LEN = 2)
+<!--展示长度 7页-->
+#set($PAGER_LEN = 7)
+#set($pre = $!{pageVo.pageNumber} - 1)
+#set($next = $!{pageVo.pageNumber} + 1)
+
+<!--设置页码列表开始和结束  -->
+<!--如果总页数<=展示长度  -->
+#if($!{pageVo.totalPage} <= $!{PAGER_LEN})
+#set($header = 1)
+#set($ender = $!{pageVo.totalPage})
+
+<!--如果总页数>展示长度  -->
+#else
+<!-- 当前页+2 <= 展示长度-->
+#if($!{pageVo.pageNumber}+$!{BEHIND_LEN}<= $!{PAGER_LEN})
+#set($header = 1)
+#set($ender = $PAGER_LEN)
+
+<!--当前页+2 > 展示长度 && 定尾部，再定头部  -->
+#else
+#set($ender = $!{pageVo.pageNumber} + $!{BEHIND_LEN})
+
+#if($!{ender} > $!{pageVo.totalPage})
+#set($ender = $!{pageVo.totalPage})
+#end
+#set($header = 1)
+#end
+#end
+
+#if($!{pageVo.totalPage}!=1&&$!{pageVo.totalPage}!=0)
+<div style="margin-top: 20px">
+    <ul class="pagination pagination-default">
+        #if($!{pageVo.pageNumber} == 1)
+        <li class="disabled">
+            <a href="javascript:;">< 上一页</a>
+        </li>
+        #else
+        <li>
+            <a href="$!{u}&page=$!{pre}">< 上一页</a>
+        </li>
+        #end
+
+        #if($!{pageVo.pageNumber}+$!{BEHIND_LEN}> $!{PAGER_LEN})
+        #set($x = $!{header}+1)
+        #foreach($p in [$!{header}..$!{x}])
+        #if($!{pageVo.pageNumber} == $!{p})
+        <li class="active">
+            <a href="javascript:;">$!{p}</a>
+        </li>
+        #else
+        <li>
+            <a href="$!{u}&page=$!{p}">$!{p}</a>
+        </li>
+        #end
+        #end
+
+        <li>
+            <a href="javascript:;" style="border-bottom: none;border-top:none;cursor: default">...</a>
+        </li>
+
+        #set($y = $!{ender} - 4)
+        #foreach($p in [$!{y}..$!{ender}])
+        #if($!{pageVo.pageNumber} == $!{p})
+        <li class="active">
+            <a href="javascript:;">$!{p}</a>
+        </li>
+        #else
+        <li>
+            <a href="$!{u}&page=$!{p}">$!{p}</a>
+        </li>
+        #end
+        #end
+
+        #if($!{pageVo.pageNumber}+$!{BEHIND_LEN} < $!{pageVo.totalPage})
+        <li>
+            <a href="javascript:;" style="border-bottom: none;border-top:none;cursor: default">...</a>
+        </li>
+        #end
+        #else
+        #foreach($p in [$!{header}..$!{ender}])
+        #if($!{pageVo.pageNumber} == $!{p})
+        <li class="active">
+            <a href="javascript:;">$!{p}</a>
+        </li>
+        #else
+        <li>
+            <a href="$!{u}&page=$!{p}">$!{p}</a>
+        </li>
+        #end
+        #end
+
+        #if($ender>$PAGER_LEN)
+        <li>
+            <a href="javascript:;" style="border-bottom: none;border-top:none;cursor: default">...</a>
+        </li>
+        #end
+        #end
+
+
+        #if($!{pageVo.pageNumber} == $!{pageVo.totalPage})
+        <li class="disabled">
+            <a href="javascript:;">下一页 ></a>
+        </li>
+        #else
+        <li>
+            <a href="$!{u}&page=$!next">下一页 ></a>
+        </li>
+        #end
+
+
+    </ul>
+    <div class="descr">
+                <span class="total">
+                    共 $!{pageVo.totalPage} 页，到第
+                </span>
+        <input class="page_input" type="number" value="$!{pageVo.pageNumber}"
+               onkeydown="javascript:if(event.keyCode==13){location.href = '$!{u}&page=' + this.value}">
+        <span class="total page">页</span>
+        <a class="btn btn-default btn-default" id="go" href="javascript:;"
+           onclick="go('${request.getParameter('conversationId')}')">确定</a>
+    </div>
+</div>
+#end
+#end

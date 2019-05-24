@@ -14,7 +14,7 @@
 
 <body>
 #parse("header.html")
-#parse("page.html")
+#parse("letterPage.html")
 <script type="text/javascript" src="/js/sendMessage.js"></script>
 <div class="wrap">
 
@@ -50,7 +50,7 @@
             </ul>
 
             <div class="text-center">
-                #pagination("/msg/detail", $!{pageVo})
+                #letterPagination("/msg/detail?conversationId=${request.getParameter('conversationId')}", $!{pageVo})
             </div>
 
         </div>

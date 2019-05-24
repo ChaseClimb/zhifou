@@ -14,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.xml.transform.Source;
 import java.util.Date;
 
 @Component
@@ -36,7 +37,7 @@ public class PassportInterceptor implements HandlerInterceptor {
         String ticket = null;
         if (httpServletRequest.getCookies() != null) {
             for (Cookie cookie : httpServletRequest.getCookies()) {
-                if (cookie.getName().equals("ticket")) {
+                if ("ticket".equals(cookie.getName())) {
                     ticket = cookie.getValue();
                     break;
                 }
@@ -63,7 +64,9 @@ public class PassportInterceptor implements HandlerInterceptor {
         if (modelAndView != null) {
             User user = hostHolder.getUser();
             modelAndView.addObject("user", user);
-            modelAndView.addObject("unReadMessageCount", messageDao.getUnreadMessageCount(user.getId()));
+            if (user != null) {
+                modelAndView.addObject("unReadMessageCount", messageDao.getUnreadMessageCount(user.getId()));
+            }
         }
     }
 

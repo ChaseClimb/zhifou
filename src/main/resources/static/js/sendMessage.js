@@ -29,7 +29,6 @@ function replyMessage(){
             alert(data.msg);
         } else {
             location.reload();
-            alert("回复成功");
         }
     },"json");
 }
